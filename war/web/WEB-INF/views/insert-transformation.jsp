@@ -8,8 +8,20 @@
 
   <!-- Message Display -->
   <% if (request.getAttribute("message") != null) { %>
-    <div class="alert alert-info" role="alert">
-      <%= request.getAttribute("message") %>
+    <% String messageType = (String) request.getAttribute("messageType"); %>
+    
+    <div class="alert alert-<%= messageType != null ? messageType : "info" %> alert-dismissible fade show" role="alert">
+        <h5><strong><%= messageType != null && messageType.equals("success") ? "Success!" : messageType.equals("warning") ? "Warning!" : "Information" %></strong></h5>
+        <ul class="mb-0">
+            <%
+                String message = (String) request.getAttribute("message");
+                String[] messageLines = message.split("\n");
+                for (String line : messageLines) {
+            %>
+            <li><%= line %></li>
+            <% } %>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <% } %>
 
@@ -33,7 +45,7 @@
                       if (sponge.getIsTransformed().equals("FALSE")) {
                 %>
                   <option value="<%= sponge.getId() %>">
-                    <%= "Sponge ID: " + sponge.getId() + " - Volume: " + sponge.getDimLength() + "m³" %>
+                    <%= "Sponge ID: " + sponge.getId() + " - Volume: " + (sponge.getDimHeight() * sponge.getDimLength() * sponge.getDimWidth()) + "m³" %>
                   </option>
                 <% 
                       }

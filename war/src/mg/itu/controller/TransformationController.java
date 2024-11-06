@@ -91,7 +91,6 @@ public class TransformationController extends HttpServlet {
             if (volumeInitialBlock - (sumVolume + volumeRemaining) >= acceptedLoss) {
                 String message = String.format(
                     "The calculated total volume exceeds the allowable loss threshold.\n" +
-                    "Details:\n" +
                     "  - Initial Sponge Volume: %.2f m³\n" +
                     "  - Accepted Loss Threshold: %.2f m³\n" +
                     "  - Total Product Volume: %.2f m³\n" +
@@ -102,39 +101,34 @@ public class TransformationController extends HttpServlet {
                 );
 
                 req.setAttribute("message", message);
-            }
-
-            // product volume exceeds initial block volume
+                req.setAttribute("messageType", "warning");
+            } 
+            
             else if(sumVolume > volumeInitialBlock) {
                 String message = String.format(
                     "The total volume of products exceeds the initial sponge volume.\n" +
-                    "Details:\n" +
                     "  - Initial Sponge Volume: %.2f m³\n" +
                     "  - Total Product Volume: %.2f m³\n",
                     volumeInitialBlock, sumVolume
                 );
 
                 req.setAttribute("message", message);
-            }
-
+                req.setAttribute("messageType", "warning");
+            } 
+            
             else {
-                // insert sponge transformation
                 SpongeTransformationService.insert(initialBlock, transformationDate);
 
-                // insert products transformation
                 SpongeTransformation lastSpongeTransformation = SpongeTransformationService.getLastSpongeTransformationInserted();
                 ProductService.insertProductQuantities(productQuantities, lastSpongeTransformation);
 
-                // insert remaining as a new InitialSponge
                 InitialSpongeService.insertRemaining(initialBlock, remainingLength, remainingWidth, remainingHeight);
-
-                // mark isTransformed from initialBlock to TRUE
                 InitialSpongeService.setIsTransformedFlag("TRUE", initialSpongeId, null);
 
-                // save remaining
                 RemainingTransformationService.insertRemainingTransformation(lastSpongeTransformation);
 
                 req.setAttribute("message", "Transformation completed successfully! The initial sponge and products have been saved.");
+                req.setAttribute("messageType", "success");
             }  
         } 
         

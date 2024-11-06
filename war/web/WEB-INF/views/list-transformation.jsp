@@ -34,7 +34,7 @@
                     <tr>
                         <td><%= detail.getDateTransformation() %></td>
                         <td><%= currencyFormat.format(detail.getInitialPurchasePrice()) %></td> <!-- Formatted price -->
-                        <td><%= detail.getInitialLength() %> m³</td>
+                        <td><%= (detail.getInitialHeight() * detail.getInitialLength() * detail.getInitialWidth()) %> m³</td>
                         <td><%= detail.getProductLabel() %></td>
                         <td><%= currencyFormat.format(detail.getProductSellingPrice()) %></td> <!-- Formatted price -->
                         <td><%= (detail.getProductLength() * detail.getProductWidth() * detail.getProductHeight()) %> m³</td>

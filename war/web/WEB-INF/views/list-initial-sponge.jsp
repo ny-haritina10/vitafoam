@@ -32,7 +32,7 @@
                         <td><%= sponge.getId() %></td>
                         <td><%= currencyFormat.format(sponge.getPurchasePrice()) %></td> <!-- Formatted price -->
                         <td><%= sponge.getIsTransformed() %></td>
-                        <td><%= sponge.getDimLength() %> m³</td>
+                        <td><%= (sponge.getDimHeight() * sponge.getDimLength() * sponge.getDimWidth()) %> m³</td>
                     </tr>
                     <%
                             }
