@@ -164,33 +164,20 @@ WHERE
     i.is_transformed = 'FALSE';
 
 --
--- COST PRICE (revient)
--- 
+--
+--
 CREATE OR REPLACE VIEW v_product_cost_price AS
 SELECT
-    i.id AS initial_sponge_id,
-    i.purchase_price AS initial_sponge_purchase_price,
+    st.id_initial_sponge AS initial_sponge_id,
+    isg.purchase_price AS initial_sponge_purchase_price,
     p.id AS product_id,
     p.label AS product_label,
     p.selling_price AS product_selling_price,
-    ROUND(
-        (i.purchase_price / NULLIF((i.dim_length * i.dim_width * i.dim_height), 0)) * 
-        (p.dim_length * p.dim_width * p.dim_height),
-        2
-    ) AS product_cost_price
+    (p.dim_length * p.dim_width * p.dim_height) * 
+    (isg.purchase_price / NULLIF((isg.dim_length * isg.dim_width * isg.dim_height), 0)) AS product_cost_price
+    
 FROM
     Product p
-    CROSS JOIN (
-        SELECT
-            id,
-            purchase_price,
-            dim_length,
-            dim_width,
-            dim_height
-        FROM
-            InitialSponge
-        WHERE
-            is_transformed = 'FALSE'
-    ) i
-WHERE
-    (p.dim_length * p.dim_height * p.dim_width) <= (i.dim_length * i.dim_height * i.dim_width); 
+JOIN ProductTransformation pt ON pt.id_product = p.id
+JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
+JOIN InitialSponge isg ON st.id_initial_sponge = isg.id;
