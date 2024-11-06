@@ -57,7 +57,7 @@
 
             <!-- HIDDEN WITH VALUE 1 -->
             <div class="mb-3">
-              <label for="dimWidth" class="form-label">Width (m)</label>
+              <!-- <label for="dimWidth" class="form-label">Width (m)</label> -->
               <input
                 type="hidden"
                 step="0.1"
@@ -71,7 +71,7 @@
             </div>
             <!-- HIDDEN WITH VALUE 1 -->
             <div class="mb-3">
-              <label for="dimHeight" class="form-label">Height (m)</label>
+              <!-- <label for="dimHeight" class="form-label">Height (m)</label> -->
               <input
                 type="hidden"
                 step="0.1"

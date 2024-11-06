@@ -42,11 +42,6 @@ public class RemainingTransformation extends BaseModel<RemainingTransformation> 
             int spongeTransformationId = this.spongeTransformation != null ? this.spongeTransformation.getId() : 0;
             int initialSpongeId = this.initialSponge != null ? this.initialSponge.getId() : 0;
 
-            // Debug logging
-            System.out.println("Inserting RemainingTransformation with values:");
-            System.out.println("Sponge Transformation ID: " + spongeTransformationId);
-            System.out.println("Initial Sponge ID: " + initialSpongeId);
-
             // Set parameters for the prepared statement
             statement.setInt(1, spongeTransformationId);
             statement.setInt(2, initialSpongeId);

@@ -162,3 +162,35 @@ FROM
     CROSS JOIN v_minimum_volume_product p
 WHERE 
     i.is_transformed = 'FALSE';
+
+--
+-- COST PRICE (revient)
+-- 
+CREATE OR REPLACE VIEW v_product_cost_price AS
+SELECT
+    i.id AS initial_sponge_id,
+    i.purchase_price AS initial_sponge_purchase_price,
+    p.id AS product_id,
+    p.label AS product_label,
+    p.selling_price AS product_selling_price,
+    ROUND(
+        (i.purchase_price / NULLIF((i.dim_length * i.dim_width * i.dim_height), 0)) * 
+        (p.dim_length * p.dim_width * p.dim_height),
+        2
+    ) AS product_cost_price
+FROM
+    Product p
+    CROSS JOIN (
+        SELECT
+            id,
+            purchase_price,
+            dim_length,
+            dim_width,
+            dim_height
+        FROM
+            InitialSponge
+        WHERE
+            is_transformed = 'FALSE'
+    ) i
+WHERE
+    (p.dim_length * p.dim_height * p.dim_width) <= (i.dim_length * i.dim_height * i.dim_width); 

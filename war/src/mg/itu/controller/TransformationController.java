@@ -122,10 +122,13 @@ public class TransformationController extends HttpServlet {
                 SpongeTransformation lastSpongeTransformation = SpongeTransformationService.getLastSpongeTransformationInserted();
                 ProductService.insertProductQuantities(productQuantities, lastSpongeTransformation);
 
-                InitialSpongeService.insertRemaining(initialBlock, remainingLength, remainingWidth, remainingHeight);
-                InitialSpongeService.setIsTransformedFlag("TRUE", initialSpongeId, null);
-
-                RemainingTransformationService.insertRemainingTransformation(lastSpongeTransformation);
+                // check if the remaining volume is not zero
+                if ((remainingLength * remainingWidth * remainingHeight) != 0) {
+                    InitialSpongeService.insertRemaining(initialBlock, remainingLength, remainingWidth, remainingHeight);
+                    InitialSpongeService.setIsTransformedFlag("TRUE", initialSpongeId, null);
+    
+                    RemainingTransformationService.insertRemainingTransformation(lastSpongeTransformation);    
+                }
 
                 req.setAttribute("message", "Transformation completed successfully! The initial sponge and products have been saved.");
                 req.setAttribute("messageType", "success");
@@ -143,5 +146,4 @@ public class TransformationController extends HttpServlet {
         req.setAttribute("template_content", "/WEB-INF/views/insert-transformation.jsp");
         req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);
     }
-
 }

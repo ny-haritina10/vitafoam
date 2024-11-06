@@ -106,7 +106,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="remainingWidth" class="form-label">Width (m)</label>
+              <!-- <label for="remainingWidth" class="form-label">Width (m)</label> -->
               <input
                 type="hidden"
                 step="0.1"
@@ -119,7 +119,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="remainingHeight" class="form-label">Height (m)</label>
+              <!-- <label for="remainingHeight" class="form-label">Height (m)</label> -->
               <input
                 type="hidden"
                 step="0.1"

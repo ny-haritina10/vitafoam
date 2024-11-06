@@ -190,6 +190,11 @@
 
               <ul class="menu-sub">
                 <li class="menu-item">
+                  <a href="ProductCostPriceController" class="menu-link">
+                    <div data-i18n="Without menu">Product Cost Price</div>
+                  </a>
+                </li>
+                <li class="menu-item">
                   <a href="TransformationTotalAmountController" class="menu-link">
                     <div data-i18n="Without menu">Total amount manufactured product</div>
                   </a>
