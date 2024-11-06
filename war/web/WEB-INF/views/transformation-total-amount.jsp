@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mg.itu.model.TransformationTotalAmount" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.util.Locale" %>
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Transformation Total Amounts</h4>
@@ -21,6 +22,7 @@
                     <%
                         TransformationTotalAmount[] totals = (TransformationTotalAmount[]) request.getAttribute("totals");
                         double grandTotal = 0.0; 
+                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US); // Change Locale as needed
 
                         if (totals != null && totals.length > 0) {
                             for (TransformationTotalAmount total : totals) {
@@ -30,7 +32,7 @@
                     <tr>
                         <td><%= total.getTransformationId() %></td>
                         <td><%= total.getDateTransformation() %></td>
-                        <td>$<%= amount %></td>
+                        <td><%= currencyFormat.format(amount) %></td> <!-- Formatted amount -->
                     </tr>
                     <%
                             }
@@ -38,7 +40,7 @@
                     <!-- Total Row -->
                     <tr>
                         <td colspan="2" class="text-right fw-bold">Total:</td>
-                        <td>$<%= grandTotal %></td>
+                        <td><%= currencyFormat.format(grandTotal) %></td> <!-- Formatted grand total -->
                     </tr>
                     <%
                         } else {

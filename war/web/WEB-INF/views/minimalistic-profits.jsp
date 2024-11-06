@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mg.itu.model.MinimalisticProfits" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.util.Locale" %>
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Minimalistic Profits</h4>
@@ -25,6 +26,7 @@
                     <%
                         MinimalisticProfits[] totals = (MinimalisticProfits[]) request.getAttribute("totals");
                         double grandTotalProfit = 0.0; // Initialize a variable to accumulate the grand total profit
+                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US); // Change Locale as needed
 
                         if (totals != null && totals.length > 0) {
                             for (MinimalisticProfits profit : totals) {
@@ -32,12 +34,12 @@
                                 grandTotalProfit += minimalisticProfit; // Accumulate the profit
                     %>
                     <tr>
-                        <td>$<%= profit.getPurchasePrice() %></td>
-                        <td><%= profit.getInitialVolume() %>m³</td>
-                        <td>$<%= minimalisticProfit %></td>
+                        <td><%= currencyFormat.format(profit.getPurchasePrice()) %></td> <!-- Formatted price -->
+                        <td><%= profit.getInitialVolume() %> m³</td>
+                        <td><%= currencyFormat.format(minimalisticProfit) %></td> <!-- Formatted profit -->
                         <td><%= profit.getProductLabel() %></td>
-                        <td>$<%= profit.getProductPrice() %></td>
-                        <td><%= profit.getProductVolume() %>m³</td>
+                        <td><%= currencyFormat.format(profit.getProductPrice()) %></td> <!-- Formatted price -->
+                        <td><%= profit.getProductVolume() %> m³</td>
                         <td><%= profit.getPossibleQuantity() %> unit(s)</td>
                     </tr>
                     <%
@@ -46,7 +48,7 @@
                     <!-- Total Row -->
                     <tr>
                         <td colspan="4" class="text-right fw-bold">Grand Total Profit:</td>
-                        <td>$<%= grandTotalProfit %></td>
+                        <td><%= currencyFormat.format(grandTotalProfit) %></td> <!-- Formatted grand total -->
                     </tr>
                     <%
                         } else {
