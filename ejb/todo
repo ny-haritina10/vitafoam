@@ -1,0 +1,103 @@
+# VITAFOAM 
+
+## CONCEPTION
+
+- InitialSponge
+    . purchase price
+    . date creation
+    . is transformed `DEFAULT FALSE`
+    . dimension (in meters)
+        . length
+        . width
+        . height
+
+- Product
+    . label
+    . selling price
+    . dimension
+        . length
+        . width
+        . height
+
+- SpongeTransformation
+    . initial sponge [FK]
+    . date transformation
+
+- ProductTransformation 
+    . sponge transformation [FK]
+    . product [FK]
+    . quantity
+
+- RemainingTransformation
+    . sponge transformation [FK]
+    . initial sponge [FK]
+        . Dimension remaining 
+            . create initial sponge
+            . update SpongeTransformation.initial_sponge.is_transformed = `TRUE`
+
+            
+### Form sponge insertion
+- purchase price (numeric)
+- date creation (date)
+- dimension
+    . length (numeric)
+    . width (numeric)
+    . height (numeric)
+
+### Form product insertion
+- label (string)
+- selling price (numeric)
+- dimension
+    . length (numeric)
+    . width (numeric)
+    . height (numeric)
+
+### Sponge Transformation
+- initial sponge (select)
+- date transformation (date)
+- input qté product (numeric)
+    . loop trough all product
+- remaining 
+    . dimension
+        . length (numeric)
+        . width (numeric)
+        . height (numeric)
+
+### Stock Status
+- product 
+    -> stock status 
+        -> prix de revient
+        -> prix de vente 
+
+- total sum products transformed
+    -> total 
+        -> getSellingPrice * quantity
+        -> sum per initial sponge
+
+- total amount for the most profitable product 
+    -> get most profitable product 
+        -> get max(rapport price/volume)
+    -> get remaining dimension for each initial sponge 
+    -> transform each reamining to the most profitable product
+        -> transform until remaining is empty 
+    -> total amount by selling price
+        -> per initial sponge
+        -> total 
+    -> Profit from each product
+        -> get initial sponge
+        -> get cost price by m^3
+        -> profit = selling - cost
+
+- total amount for the least bulky product
+    -> get the least bulky product 
+    -> get min(volume)
+    -> get remaining dimension for each initial sponge 
+    -> transform each reamining to the the least bulky product
+        -> transform until remaining is empty 
+    -> total amount by selling price
+        -> per initial sponge
+        -> total 
+    -> Profit from each product
+        -> get initial sponge
+        -> get cost price by m^3
+        -> profit = selling - cost
