@@ -108,3 +108,29 @@ EXCEPTION
         RETURN 0;
 END;
 /
+
+
+---------------
+
+CREATE OR REPLACE FUNCTION get_primary_parent_id(p_node_id IN NUMBER)
+RETURN NUMBER
+IS
+    v_parent_id NUMBER;
+BEGIN
+    SELECT MIN(id_sponge_source) INTO v_parent_id
+    FROM v_source_fille
+    WHERE id_sponge_fille = p_node_id;
+
+    IF v_parent_id IS NULL THEN
+        RETURN p_node_id; -- Node is the root/source
+    ELSE
+        RETURN get_primary_parent_id(v_parent_id); -- Recursive call to find the ultimate primary parent
+    END IF;
+END get_primary_parent_id;
+/
+
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(get_primary_parent_id(56));
+END;
+/
