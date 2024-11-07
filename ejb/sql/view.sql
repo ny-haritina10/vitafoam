@@ -27,7 +27,18 @@ SELECT
     
     -- Remaining Transformation details
     rt.id AS remaining_transformation_id,
-    rt.id_initial_sponge AS remaining_initial_sponge_id
+    rt.id_initial_sponge AS remaining_initial_sponge_id,
+    
+    -- Main Initial Sponge ID
+    (
+        SELECT id
+        FROM InitialSponge
+        WHERE id NOT IN (
+            SELECT id_initial_sponge
+            FROM SpongeTransformation
+        )
+        AND ROWNUM = 1
+    ) AS main_initial_sponge_id
     
 FROM
     SpongeTransformation st

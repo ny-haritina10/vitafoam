@@ -3,6 +3,7 @@
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
 
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Transformation Details</h4>
 
@@ -13,6 +14,8 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Main Initial Sponge ID</th> 
+                        <th>Id Source</th>
                         <th>Date Transformation</th>
                         <th>Initial Purchase Price</th>
                         <th>Initial Volume</th>
@@ -32,11 +35,13 @@
                             for (TransformationDetail detail : details) {
                     %>
                     <tr>
+                        <td><%= detail.getMainInitialSpongeId() %></td> <!-- New field -->
+                        <td><%= detail.getInitialSpongeId() %></td>
                         <td><%= detail.getDateTransformation() %></td>
-                        <td><%= currencyFormat.format(detail.getInitialPurchasePrice()) %></td> <!-- Formatted price -->
+                        <td><%= currencyFormat.format(detail.getInitialPurchasePrice()) %></td>
                         <td><%= (detail.getInitialHeight() * detail.getInitialLength() * detail.getInitialWidth()) %> m³</td>
                         <td><%= detail.getProductLabel() %></td>
-                        <td><%= currencyFormat.format(detail.getProductSellingPrice()) %></td> <!-- Formatted price -->
+                        <td><%= currencyFormat.format(detail.getProductSellingPrice()) %></td>
                         <td><%= (detail.getProductLength() * detail.getProductWidth() * detail.getProductHeight()) %> m³</td>
                         <td><%= detail.getProductQuantity() %></td>
                         <td><%= detail.getRemainingInitialSpongeId() %></td>
@@ -46,7 +51,7 @@
                         } else {
                     %>
                     <tr>
-                        <td colspan="8" class="text-center">No Transformation Details found.</td> <!-- Fixed colspan to match table structure -->
+                        <td colspan="11" class="text-center">No Transformation Details found.</td> <!-- Adjusted colspan -->
                     </tr>
                     <% } %>
                 </tbody>

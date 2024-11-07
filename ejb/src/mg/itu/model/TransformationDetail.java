@@ -9,6 +9,9 @@ public class TransformationDetail extends BaseModel<TransformationDetail> {
 
     private int transformationId;
     private String dateTransformation;
+
+    private int mainInitialSpongeId;
+
     
     private int initialSpongeId;
     private double initialPurchasePrice;
@@ -177,7 +180,15 @@ public class TransformationDetail extends BaseModel<TransformationDetail> {
         this.remainingInitialSpongeId = remainingInitialSpongeId;
     }
 
-    // Mapping ResultSet to TransformationDetail object
+    public int getMainInitialSpongeId() {
+        return mainInitialSpongeId;
+    }
+
+    public void setMainInitialSpongeId(int mainInitialSpongeId) {
+        this.mainInitialSpongeId = mainInitialSpongeId;
+    }
+
+    // Update mapRow method to map new columns from ResultSet
     @Override
     protected TransformationDetail mapRow(ResultSet result) throws Exception {
         TransformationDetail detail = new TransformationDetail();
@@ -204,14 +215,17 @@ public class TransformationDetail extends BaseModel<TransformationDetail> {
         detail.setRemainingTransformationId(result.getInt("remaining_transformation_id"));
         detail.setRemainingInitialSpongeId(result.getInt("remaining_initial_sponge_id"));
 
+        // Map new columns
+        detail.setMainInitialSpongeId(result.getInt("main_initial_sponge_id"));
+
         return detail;
     }
 
-    // Getting fields and values for SQL operations
+
     @Override
     protected Map<String, Object> getFieldsMap() {
         Map<String, Object> fields = new HashMap<>();
-        
+
         fields.put("transformation_id", transformationId);
         fields.put("date_transformation", dateTransformation);
         
@@ -233,6 +247,9 @@ public class TransformationDetail extends BaseModel<TransformationDetail> {
 
         fields.put("remaining_transformation_id", remainingTransformationId);
         fields.put("remaining_initial_sponge_id", remainingInitialSpongeId);
+
+        // Add new fields
+        fields.put("main_initial_sponge_id", mainInitialSpongeId);
 
         return fields;
     }
