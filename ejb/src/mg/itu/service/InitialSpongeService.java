@@ -11,12 +11,7 @@ import mg.itu.model.LossTreshold;
 import mg.itu.model.Product;
 import mg.itu.model.SpongeTransformation;
 
-public class InitialSpongeService {
-
-    public static double getPurchasePricePerCubicMeter(InitialSponge block) 
-    {
-        return (block.getPurchasePrice() / (block.getDimHeight() * block.getDimLength() * block.getDimWidth()));
-    }
+public class InitialSpongeService {      
 
     public static void setIsTransformedFlag(String flag, int idInitialSponge, Connection connection) {
         if (connection == null) 
@@ -60,7 +55,7 @@ public class InitialSpongeService {
                 }
             }
         }
-    }  
+    }     
 
     public static void insertRemaining (
         InitialSponge initialBlock, 
@@ -100,5 +95,125 @@ public class InitialSpongeService {
         double volumeBlock = getVolume(block);
         System.out.println(loss.getThetha() + "*" + volumeBlock + "/100");
         return (loss.getThetha() * volumeBlock) / 100;
+    }
+
+
+    public static void updatePurchasePriceRecursive(int idInitialSponge, double newPurchasePrice, Connection connection) 
+        throws Exception
+    {
+        if (connection == null) {
+            connection = Database.getConnection();
+        }
+
+        // Mettre à jour le prix d'achat du bloc initial
+        updatePurchasePrice(idInitialSponge, newPurchasePrice, null);
+
+        // Récupérer l'ID du bloc enfant
+        int idSpongeFille = getSourceFilleId(idInitialSponge, null);
+
+        if (idSpongeFille > 0) {
+            // Calculer le nouveau prix d'achat du bloc enfant
+            double newPurchasePriceForFille = InitialSpongeService.getNewPurchasePrice(
+                new InitialSponge().getById(idInitialSponge, InitialSponge.class, null),
+                new InitialSponge().getById(idSpongeFille, InitialSponge.class, null)
+            );
+
+            // Mettre à jour le prix d'achat du bloc enfant
+            updatePurchasePriceRecursive(idSpongeFille, newPurchasePriceForFille, null);
+        }
+    }
+
+    public static void updatePurchasePrice(int idSpongeFille, double newPurchasePrice, Connection connection) {
+        if (connection == null) {
+            connection = Database.getConnection();
+        }
+
+        String sql = "UPDATE InitialSponge SET purchase_price = ? WHERE id = ?";
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDouble(1, newPurchasePrice);
+            preparedStatement.setInt(2, idSpongeFille);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Successfully updated purchase_price for ID: " + idSpongeFille);
+            } else {
+                System.out.println("No record found with ID: " + idSpongeFille);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close PreparedStatement: " + e.getMessage());
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close Connection: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static int getSourceFilleId(int idSpongeSource, Connection connection) {
+        int id = 0;
+
+        if (connection == null) {
+            connection = Database.getConnection();
+        }
+
+        String sql = "SELECT id_sponge_fille FROM v_source_fille WHERE id_sponge_source = ?";
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, idSpongeSource);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                id += resultSet.getInt("id_sponge_fille");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close PreparedStatement: " + e.getMessage());
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.err.println("Failed to close Connection: " + e.getMessage());
+                }
+            }
+        }
+
+        return id;
+    }
+
+    public static double getNewPurchasePrice(InitialSponge blockSource, InitialSponge blockFille) {
+        double pricePerCubicMeter = getPurchasePricePerCubicMeter(blockSource);
+        double newPurchasePrice = pricePerCubicMeter * (blockFille.getDimHeight() * blockFille.getDimLength() * blockFille.getDimWidth());
+
+        return newPurchasePrice;
+    }
+
+    public static double getPurchasePricePerCubicMeter(InitialSponge block) {
+        return (block.getPurchasePrice() / (block.getDimHeight() * block.getDimLength() * block.getDimWidth()));
     }
 }

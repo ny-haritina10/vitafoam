@@ -60,6 +60,7 @@ public class InitialSpongeController extends HttpServlet {
             // Handle update
             if (mode != null && mode.equals("update")) {
                 int id = Integer.parseInt(req.getParameter("id"));
+
                 double purchasePrice = Double.parseDouble(req.getParameter("purchasePrice"));
                 String isTransformed = req.getParameter("isTransformed");
                 double dimLength = Double.parseDouble(req.getParameter("dimLength"));
@@ -67,6 +68,7 @@ public class InitialSpongeController extends HttpServlet {
                 double dimHeight = Double.parseDouble(req.getParameter("dimHeight"));
 
                 InitialSponge sponge = new InitialSponge();
+
                 sponge.setId(id);
                 sponge.setPurchasePrice(purchasePrice);
                 sponge.setIsTransformed(isTransformed);
@@ -74,17 +76,33 @@ public class InitialSpongeController extends HttpServlet {
                 sponge.setDimWidth(dimWidth);
                 sponge.setDimHeight(dimHeight);
 
+                // get id fille of source
+                int idFille = InitialSpongeService.getSourceFilleId(id, null);
+
+                // retrieve fille block
+                InitialSponge blockFille = new InitialSponge().getById(idFille, InitialSponge.class, null);
+
+                // get new purchase price
+                double newPurchasePrice = InitialSpongeService.getNewPurchasePrice(sponge, blockFille);
+
+                // update source block
                 boolean updated = sponge.update(null, "InitialSponge");
+
+                // update fille block
+                InitialSpongeService.updatePurchasePriceRecursive(idFille, newPurchasePrice, null);
 
                 if (updated) {
                     resp.sendRedirect("InitialSpongeController");
                     return;
-                } else {
+                } 
+                
+                else {
                     req.setAttribute("message", "Failed to update initial sponge.");
                     req.setAttribute("sponge", sponge);
                     req.setAttribute("template_content", "/WEB-INF/views/edit-initial-sponge.jsp");
                 }
             }
+
             // Handle create
             else {
                 double purchasePrice = Double.parseDouble(req.getParameter("purchasePrice"));
@@ -94,6 +112,7 @@ public class InitialSpongeController extends HttpServlet {
                 double dimHeight = Double.parseDouble(req.getParameter("dimHeight"));
 
                 InitialSponge initialSponge = new InitialSponge();
+
                 initialSponge.setPurchasePrice(purchasePrice);
                 initialSponge.setIsTransformed(isTransformed);
                 initialSponge.setDimLength(dimLength);
