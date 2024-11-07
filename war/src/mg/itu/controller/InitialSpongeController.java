@@ -100,10 +100,7 @@ public class InitialSpongeController extends HttpServlet {
                 initialSponge.setDimWidth(dimWidth);
                 initialSponge.setDimHeight(dimHeight);
 
-                boolean savedInitialSponge = initialSponge.save(null, "InitialSponge", "seq_initial_sponge.NEXTVAL");
-
-                
-                double nP = InitialSpongeService.getPurchasePriceV2ById();
+                boolean savedInitialSponge = initialSponge.save(null, "InitialSponge", "seq_initial_sponge.NEXTVAL");                
 
                 if (savedInitialSponge) {
                     req.setAttribute("message", "Initial sponge inserted successfully!");

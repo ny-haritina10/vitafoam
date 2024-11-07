@@ -13,9 +13,11 @@ import mg.itu.model.SpongeTransformation;
 
 public class InitialSpongeService {
 
+    public static double getPurchasePricePerCubicMeter(InitialSponge block) 
+    {
+        return (block.getPurchasePrice() / (block.getDimHeight() * block.getDimLength() * block.getDimWidth()));
+    }
 
-
-    
     public static void setIsTransformedFlag(String flag, int idInitialSponge, Connection connection) {
         if (connection == null) 
         { connection = Database.getConnection(); }
@@ -60,91 +62,6 @@ public class InitialSpongeService {
         }
     }  
 
-
-    public double getPurchasePriceV2ById(int idSpongeFille, Connection connection) {
-        double purchasePriceV2 = 0.0;
-        
-        if (connection == null) {
-            connection = Database.getConnection();
-        }
-        
-        String sql = "SELECT purchase_price_v2 FROM v_source_fille_remaining WHERE id_sponge_fille = ?";
-        PreparedStatement preparedStatement = null;
-        
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, idSpongeFille);
-            
-            ResultSet resultSet = preparedStatement.executeQuery();
-            
-            if (resultSet.next()) {
-                purchasePriceV2 = resultSet.getDouble("purchase_price_v2");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    System.err.println("Failed to close PreparedStatement: " + e.getMessage());
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.err.println("Failed to close Connection: " + e.getMessage());
-                }
-            }
-        }
-        
-        return purchasePriceV2;
-    }
-
-    public void updatePurchasePrice(int idSpongeFille, double newPurchasePrice, Connection connection) {
-        if (connection == null) {
-            connection = Database.getConnection();
-        }
-        
-        String sql = "UPDATE InitialSponge SET purchase_price = ? WHERE id = ?";
-        PreparedStatement preparedStatement = null;
-        
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setDouble(1, newPurchasePrice);
-            preparedStatement.setInt(2, idSpongeFille);
-            
-            int rowsAffected = preparedStatement.executeUpdate();
-            
-            if (rowsAffected > 0) {
-                System.out.println("Successfully updated purchase_price for ID: " + idSpongeFille);
-            } else {
-                System.out.println("No record found with ID: " + idSpongeFille);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    System.err.println("Failed to close PreparedStatement: " + e.getMessage());
-                }
-            }
-    
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.err.println("Failed to close Connection: " + e.getMessage());
-                }
-            }
-        }
-    }    
-
-
     public static void insertRemaining (
         InitialSponge initialBlock, 
         double remainingHeight, 
@@ -155,7 +72,10 @@ public class InitialSpongeService {
     {
         InitialSponge remainingSponge = new InitialSponge();
 
-        remainingSponge.setPurchasePrice(initialBlock.getPurchasePrice());
+        double pricePerCubicMeter = getPurchasePricePerCubicMeter(initialBlock);
+        double newPurchasePrice = pricePerCubicMeter * (remainingHeight * remainingLength * remainingWidth);
+
+        remainingSponge.setPurchasePrice(newPurchasePrice);
         remainingSponge.setIsTransformed("FALSE");
         remainingSponge.setDimHeight(remainingHeight);
         remainingSponge.setDimLength(remainingLength);

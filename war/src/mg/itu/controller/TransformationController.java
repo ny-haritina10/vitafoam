@@ -120,6 +120,7 @@ public class TransformationController extends HttpServlet {
                 SpongeTransformationService.insert(initialBlock, transformationDate);
 
                 SpongeTransformation lastSpongeTransformation = SpongeTransformationService.getLastSpongeTransformationInserted();
+                
                 ProductService.insertProductQuantities(productQuantities, lastSpongeTransformation);
 
                 // check if the remaining volume is not zero

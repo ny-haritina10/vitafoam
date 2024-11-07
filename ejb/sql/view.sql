@@ -185,12 +185,11 @@ JOIN InitialSponge isg ON st.id_initial_sponge = isg.id;
 --
 -- SOURCE FILLE RESTE 
 -- 
-CREATE OR REPLACE VIEW v_source_fille_remaining AS
+CREATE OR REPLACE VIEW v_source_fille AS
 SELECT
     pt.id AS trs,
     isp.id AS id_sponge_source ,
-    isp2.id AS id_sponge_fille ,
-    (isp.purchase_price * (isp2.dim_height * isp2.dim_length * isp2.dim_width)) / (isp.dim_height * isp.dim_length * isp.dim_height) AS purchase_price_v2
+    isp2.id AS id_sponge_fille 
 FROM 
     RemainingTransformation rt
 JOIN SpongeTransformation pt ON rt.id_sponge_transformation = pt.id
