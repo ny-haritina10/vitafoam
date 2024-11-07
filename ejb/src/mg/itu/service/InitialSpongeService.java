@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import mg.itu.database.Database;
 import mg.itu.model.InitialSponge;
 import mg.itu.model.LossTreshold;
-import mg.itu.model.Product;
-import mg.itu.model.SpongeTransformation;
 
 public class InitialSpongeService {      
 
@@ -67,6 +65,8 @@ public class InitialSpongeService {
     {
         InitialSponge remainingSponge = new InitialSponge();
 
+        // update purchase price whe inserting the remaining 
+        // new purchase price of remaining is based on volume
         double pricePerCubicMeter = getPurchasePricePerCubicMeter(initialBlock);
         double newPurchasePrice = pricePerCubicMeter * (remainingHeight * remainingLength * remainingWidth);
 
@@ -88,7 +88,6 @@ public class InitialSpongeService {
     public static double getVolume(InitialSponge block) 
     { return block.getDimHeight() * block.getDimLength() * block.getDimWidth(); }
 
-
     public static double getAcceptedLoss(InitialSponge block, LossTreshold loss) 
         throws Exception
     {
@@ -97,7 +96,6 @@ public class InitialSpongeService {
         return (loss.getThetha() * volumeBlock) / 100;
     }
 
-
     public static void updatePurchasePriceRecursive(int idInitialSponge, double newPurchasePrice, Connection connection) 
         throws Exception
     {
@@ -105,20 +103,20 @@ public class InitialSpongeService {
             connection = Database.getConnection();
         }
 
-        // Mettre à jour le prix d'achat du bloc initial
+        // udpate purchase price of source block
         updatePurchasePrice(idInitialSponge, newPurchasePrice, null);
 
-        // Récupérer l'ID du bloc enfant
+        // retrieve child id block
         int idSpongeFille = getSourceFilleId(idInitialSponge, null);
 
         if (idSpongeFille > 0) {
-            // Calculer le nouveau prix d'achat du bloc enfant
+            // calculate new purchase price from child block
             double newPurchasePriceForFille = InitialSpongeService.getNewPurchasePrice(
                 new InitialSponge().getById(idInitialSponge, InitialSponge.class, null),
                 new InitialSponge().getById(idSpongeFille, InitialSponge.class, null)
             );
 
-            // Mettre à jour le prix d'achat du bloc enfant
+            // update child purchase price recursively
             updatePurchasePriceRecursive(idSpongeFille, newPurchasePriceForFille, null);
         }
     }
@@ -208,12 +206,21 @@ public class InitialSpongeService {
 
     public static double getNewPurchasePrice(InitialSponge blockSource, InitialSponge blockFille) {
         double pricePerCubicMeter = getPurchasePricePerCubicMeter(blockSource);
-        double newPurchasePrice = pricePerCubicMeter * (blockFille.getDimHeight() * blockFille.getDimLength() * blockFille.getDimWidth());
+
+        double newPurchasePrice = pricePerCubicMeter * (
+            blockFille.getDimHeight() * 
+            blockFille.getDimLength() * 
+            blockFille.getDimWidth()
+        );
 
         return newPurchasePrice;
     }
 
     public static double getPurchasePricePerCubicMeter(InitialSponge block) {
-        return (block.getPurchasePrice() / (block.getDimHeight() * block.getDimLength() * block.getDimWidth()));
+        return (block.getPurchasePrice() / (
+            block.getDimHeight() * 
+            block.getDimLength() * 
+            block.getDimWidth()
+        ));
     }
 }
