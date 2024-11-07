@@ -18,33 +18,37 @@
                         <th>Purchase Price</th>
                         <th>Is Transformed</th>
                         <th>Volume</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
                     <%
                         InitialSponge[] sponges = (InitialSponge[]) request.getAttribute("sponges");
-                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US); // Change Locale as needed
+                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
 
                         if (sponges != null && sponges.length > 0) {
                             for (InitialSponge sponge : sponges) {
                     %>
                     <tr>
                         <td><%= sponge.getId() %></td>
-                        <td><%= currencyFormat.format(sponge.getPurchasePrice()) %></td> <!-- Formatted price -->
+                        <td><%= currencyFormat.format(sponge.getPurchasePrice()) %></td>
                         <td><%= sponge.getIsTransformed() %></td>
                         <td><%= (sponge.getDimHeight() * sponge.getDimLength() * sponge.getDimWidth()) %> m³</td>
+                        <td>
+                            <a href="InitialSpongeController?mode=edit&id=<%= sponge.getId() %>" 
+                               class="btn btn-primary btn-sm">Edit</a>
+                        </td>
                     </tr>
                     <%
                             }
                         } else {
                     %>
                     <tr>
-                        <td colspan="4" class="text-center">No Initial Sponges found.</td> <!-- Fixed colspan to match table structure -->
+                        <td colspan="5" class="text-center">No Initial Sponges found.</td>
                     </tr>
                     <% } %>
                 </tbody>
             </table>
         </div>
     </div>
-    <!--/ Basic Bootstrap Table -->
 </div>

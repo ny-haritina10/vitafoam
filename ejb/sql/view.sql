@@ -181,3 +181,18 @@ FROM
 JOIN ProductTransformation pt ON pt.id_product = p.id
 JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
 JOIN InitialSponge isg ON st.id_initial_sponge = isg.id;
+
+--
+-- SOURCE FILLE RESTE 
+-- 
+CREATE OR REPLACE VIEW v_source_fille_remaining AS
+SELECT
+    pt.id AS trs,
+    isp.id AS id_sponge_source ,
+    isp2.id AS id_sponge_fille ,
+    (isp.purchase_price * (isp2.dim_height * isp2.dim_length * isp2.dim_width)) / (isp.dim_height * isp.dim_length * isp.dim_height) AS purchase_price_v2
+FROM 
+    RemainingTransformation rt
+JOIN SpongeTransformation pt ON rt.id_sponge_transformation = pt.id
+JOIN InitialSponge isp2 ON isp2.id = rt.id_initial_sponge
+JOIN InitialSponge isp ON isp.id = pt.id_initial_sponge;

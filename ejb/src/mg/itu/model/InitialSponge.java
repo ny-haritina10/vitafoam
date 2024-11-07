@@ -62,7 +62,7 @@ public class InitialSponge extends BaseModel<InitialSponge> {
     }
 
     public void setDimLength(double dimLength) {
-        if (dimLength <= 0) {
+        if (dimLength < 0) {
             throw new IllegalArgumentException("Dimension length must be positive.");
         }
         this.dimLength = dimLength;
@@ -73,7 +73,7 @@ public class InitialSponge extends BaseModel<InitialSponge> {
     }
 
     public void setDimWidth(double dimWidth) {
-        if (dimWidth <= 0) {
+        if (dimWidth < 0) {
             throw new IllegalArgumentException("Dimension width must be positive.");
         }
         this.dimWidth = dimWidth;
@@ -84,7 +84,7 @@ public class InitialSponge extends BaseModel<InitialSponge> {
     }
 
     public void setDimHeight(double dimHeight) {
-        if (dimHeight <= 0) {
+        if (dimHeight < 0) {
             throw new IllegalArgumentException("Dimension height must be positive.");
         }
         this.dimHeight = dimHeight;
