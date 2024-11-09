@@ -109,8 +109,7 @@ EXCEPTION
 END;
 /
 
-
----------------
+/*=============================================================== */
 
 CREATE OR REPLACE FUNCTION get_primary_parent_id(p_node_id IN NUMBER)
 RETURN NUMBER
@@ -122,15 +121,9 @@ BEGIN
     WHERE id_sponge_fille = p_node_id;
 
     IF v_parent_id IS NULL THEN
-        RETURN p_node_id; -- Node is the root/source
+        RETURN p_node_id; -- node is the source
     ELSE
-        RETURN get_primary_parent_id(v_parent_id); -- Recursive call to find the ultimate primary parent
+        RETURN get_primary_parent_id(v_parent_id); -- recursive call to find the ultimate primary parent
     END IF;
 END get_primary_parent_id;
-/
-
-
-BEGIN
-    DBMS_OUTPUT.PUT_LINE(get_primary_parent_id(56));
-END;
 /

@@ -55,8 +55,8 @@ SELECT
     SUM(p.selling_price * pt.quantity) AS total_manufactured_amount
 FROM
     SpongeTransformation st
-    JOIN ProductTransformation pt ON st.id = pt.id_sponge_transformation
-    JOIN Product p ON pt.id_product = p.id
+JOIN ProductTransformation pt ON st.id = pt.id_sponge_transformation
+JOIN Product p ON pt.id_product = p.id
 GROUP BY
     st.id, st.date_transformation;
 
@@ -191,7 +191,7 @@ JOIN InitialSponge isg ON st.id_initial_sponge = isg.id;
 CREATE OR REPLACE VIEW v_source_fille AS
 SELECT
     pt.id AS trs,
-    isp.id AS id_sponge_source ,
+    isp.id AS id_sponge_source,
     isp2.id AS id_sponge_fille 
 FROM 
     RemainingTransformation rt

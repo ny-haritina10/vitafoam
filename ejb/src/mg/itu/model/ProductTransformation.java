@@ -20,7 +20,8 @@ public class ProductTransformation extends BaseModel<ProductTransformation> {
     // Constructors
     public ProductTransformation() {}
 
-    public ProductTransformation(int id, SpongeTransformation spongeTransformation, Product product, int quantity) {
+    public ProductTransformation(int id, SpongeTransformation spongeTransformation, Product product, int quantity) 
+    {
         setId(id);
         setSpongeTransformation(spongeTransformation);
         setProduct(product);

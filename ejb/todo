@@ -101,3 +101,40 @@
         -> get initial sponge
         -> get cost price by m^3
         -> profit = selling - cost
+
+/* ============================== */
+/* ============================== */
+/* ============================== */
+
+ALEA 1:
+    Exemple:
+        Block mere A
+            . v = 100m3 
+            . P_Revient = $200.000
+            -> update P_Revient = 150.000$
+            
+            T1: 
+                Reste Block Fille B
+                    . v = 30m3
+                    . P_Revient = (200.000*30)/100 = 60.000$
+                    -> update automatic = (150.000*30)/100 = 45.000$
+
+            T2:
+                Reste Block Fille C
+                    . v = 10
+                    . P_Revient = (200.000*10)/30 = 20.000$
+                    -> update automatic = (150.000*10)/30 = 15.000$
+
+    
+    + insert reste block fille 
+            . P_Revient = (P_Revient.mere * blockfille.volume) / blockfille.volume
+            
+    + Recursion
+        update P_Revient anah bloc mere
+            - mila tedavina daoly ny block fille any rehetra 
+                - get_source_block_fille
+                    - prendre tous les block fille d'un bloc mere  
+            - updatena ilay P_Revient any block fille rehetra 
+
+ALEA 2:
+    Tedavina ny block mere an'ny produit rehetra

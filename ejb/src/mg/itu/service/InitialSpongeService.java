@@ -82,7 +82,8 @@ public class InitialSpongeService {
     public static InitialSponge getLastInitialSpongeInserted() 
         throws Exception
     {
-        return new InitialSponge().getById(new InitialSponge().getMaxId(null, "InitialSponge"), InitialSponge.class, null);
+        int maxId = new InitialSponge().getMaxId(null, "InitialSponge");
+        return new InitialSponge().getById(maxId, InitialSponge.class, null);
     }
 
     public static double getVolume(InitialSponge block) 
@@ -92,7 +93,6 @@ public class InitialSpongeService {
         throws Exception
     {
         double volumeBlock = getVolume(block);
-        System.out.println(loss.getThetha() + "*" + volumeBlock + "/100");
         return (loss.getThetha() * volumeBlock) / 100;
     }
 
@@ -105,8 +105,6 @@ public class InitialSpongeService {
 
         // udpate purchase price of source block
         updatePurchasePrice(idInitialSponge, newPurchasePrice, null);
-
-        // retrieve child id block
         int idSpongeFille = getSourceFilleId(idInitialSponge, null);
 
         if (idSpongeFille > 0) {

@@ -41,7 +41,6 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         return purchasePrice;
     }
 
-    
     public void setPurchasePrice(double purchasePrice) {
         if (purchasePrice < 0) {
             throw new IllegalArgumentException("Purchase price cannot be negative.");
