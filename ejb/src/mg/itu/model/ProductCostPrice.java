@@ -7,8 +7,6 @@ import java.util.Map;
 
 public class ProductCostPrice extends BaseModel<ProductCostPrice> {
 
-    private int initialSpongeId;
-    private double initialSpongePurchasePrice;
     private int productId;
     private String productLabel;
     private double productSellingPrice;
@@ -18,22 +16,6 @@ public class ProductCostPrice extends BaseModel<ProductCostPrice> {
     public ProductCostPrice() {}
 
     // Getters and Setters
-    public int getInitialSpongeId() {
-        return initialSpongeId;
-    }
-
-    public void setInitialSpongeId(int initialSpongeId) {
-        this.initialSpongeId = initialSpongeId;
-    }
-
-    public double getInitialSpongePurchasePrice() {
-        return initialSpongePurchasePrice;
-    }
-
-    public void setInitialSpongePurchasePrice(double initialSpongePurchasePrice) {
-        this.initialSpongePurchasePrice = initialSpongePurchasePrice;
-    }
-
     public int getProductId() {
         return productId;
     }
@@ -71,8 +53,6 @@ public class ProductCostPrice extends BaseModel<ProductCostPrice> {
     protected ProductCostPrice mapRow(ResultSet result) throws Exception {
         ProductCostPrice costPrice = new ProductCostPrice();
 
-        costPrice.setInitialSpongeId(result.getInt("initial_sponge_id"));
-        costPrice.setInitialSpongePurchasePrice(result.getDouble("initial_sponge_purchase_price"));
         costPrice.setProductId(result.getInt("product_id"));
         costPrice.setProductLabel(result.getString("product_label"));
         costPrice.setProductSellingPrice(result.getDouble("product_selling_price"));
@@ -85,9 +65,7 @@ public class ProductCostPrice extends BaseModel<ProductCostPrice> {
     @Override
     protected Map<String, Object> getFieldsMap() {
         Map<String, Object> fields = new HashMap<>();
-
-        fields.put("initial_sponge_id", initialSpongeId);
-        fields.put("initial_sponge_purchase_price", initialSpongePurchasePrice);
+        
         fields.put("product_id", productId);
         fields.put("product_label", productLabel);
         fields.put("product_selling_price", productSellingPrice);

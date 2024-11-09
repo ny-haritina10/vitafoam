@@ -169,21 +169,26 @@ WHERE
 --
 -- 
 -- 
--- CREATE OR REPLACE VIEW v_product_cost_price AS
--- SELECT
---     st.id_initial_sponge AS initial_sponge_id,
---     isg.purchase_price AS initial_sponge_purchase_price,
---     p.id AS product_id,
---     p.label AS product_label,
---     p.selling_price AS product_selling_price,
---     (p.dim_length * p.dim_width * p.dim_height) * 
---     (isg.purchase_price / NULLIF((isg.dim_length * isg.dim_width * isg.dim_height), 0)) AS product_cost_price
-    
--- FROM
---     Product p
--- JOIN ProductTransformation pt ON pt.id_product = p.id
--- JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
--- JOIN InitialSponge isg ON st.id_initial_sponge = isg.id;
+CREATE OR REPLACE VIEW v_product_cost_price AS
+SELECT
+    p.id AS product_id,
+    p.label AS product_label,
+    p.selling_price AS product_selling_price,
+    (p.dim_length * p.dim_width * p.dim_height) * 
+    AVG(isg.purchase_price / NULLIF((isg.dim_length * isg.dim_width * isg.dim_height), 0)) AS product_cost_price
+FROM
+    Product p
+JOIN ProductTransformation pt ON pt.id_product = p.id
+JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
+JOIN InitialSponge isg ON st.id_initial_sponge = isg.id
+GROUP BY 
+    p.id, 
+    p.label, 
+    p.selling_price,
+    p.dim_length, 
+    p.dim_width, 
+    p.dim_height
+ORDER BY p.id;
 
 /*
     - cost price per cubic meter of initial bloc
@@ -197,60 +202,60 @@ WHERE
         total_value / total_qte 
 */
 
--- 
--- TOTAL QTE PRODUCES 
--- 
-CREATE OR REPLACE VIEW v_total_qte_produced AS
-SELECT
-    p.id,
-    SUM(pt.quantity) AS total_qte
-FROM 
-    Product p
-JOIN ProductTransformation pt ON p.id = pt.id_product
-GROUP BY p.id;
+-- -- 
+-- -- TOTAL QTE PRODUCES 
+-- -- 
+-- CREATE OR REPLACE VIEW v_total_qte_produced AS
+-- SELECT
+--     p.id,
+--     SUM(pt.quantity) AS total_qte
+-- FROM 
+--     Product p
+-- JOIN ProductTransformation pt ON p.id = pt.id_product
+-- GROUP BY p.id;
 
---
--- VALUE PER PRODUCT 
--- 
-CREATE OR REPLACE VIEW v_product_value_per_source AS
-SELECT
-    isg.id AS id_source,
-    isg.purchase_price AS source_purchase_price,
-    (isg.dim_height * isg.dim_length * isg.dim_width) AS volume_source,
-    (isg.purchase_price / ((isg.dim_height * isg.dim_length * isg.dim_width))) AS cost_cubic_meter,
-    p.id AS id_product,
-    (p.dim_height * p.dim_length * p.dim_width) AS volume_product,
-    pt.quantity AS qte_produced_per_source,
-    (p.dim_height * p.dim_length * p.dim_width) * ((isg.purchase_price / ((isg.dim_height * isg.dim_length * isg.dim_width)))) * pt.quantity AS value_product_per_source
-FROM
-    Product p
-JOIN ProductTransformation pt ON pt.id_product = p.id
-JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
-JOIN InitialSponge isg ON st.id_initial_sponge = isg.id
-ORDER BY isg.id, p.id;
+-- --
+-- -- VALUE PER PRODUCT 
+-- -- 
+-- CREATE OR REPLACE VIEW v_product_value_per_source AS
+-- SELECT
+--     isg.id AS id_source,
+--     isg.purchase_price AS source_purchase_price,
+--     (isg.dim_height * isg.dim_length * isg.dim_width) AS volume_source,
+--     (isg.purchase_price / ((isg.dim_height * isg.dim_length * isg.dim_width))) AS cost_cubic_meter,
+--     p.id AS id_product,
+--     (p.dim_height * p.dim_length * p.dim_width) AS volume_product,
+--     pt.quantity AS qte_produced_per_source,
+--     (p.dim_height * p.dim_length * p.dim_width) * ((isg.purchase_price / ((isg.dim_height * isg.dim_length * isg.dim_width)))) * pt.quantity AS value_product_per_source
+-- FROM
+--     Product p
+-- JOIN ProductTransformation pt ON pt.id_product = p.id
+-- JOIN SpongeTransformation st ON pt.id_sponge_transformation = st.id
+-- JOIN InitialSponge isg ON st.id_initial_sponge = isg.id
+-- ORDER BY isg.id, p.id;
 
---
--- TOTAL VALUE PER SOURCE
--- 
-CREATE OR REPLACE VIEW v_total_value_per_source AS
-SELECT  
-    id_product,
-    SUM(value_product_per_source) AS total_value
-FROM 
-    v_product_value_per_source
-GROUP BY id_product;
+-- --
+-- -- TOTAL VALUE PER SOURCE
+-- -- 
+-- CREATE OR REPLACE VIEW v_total_value_per_source AS
+-- SELECT  
+--     id_product,
+--     SUM(value_product_per_source) AS total_value
+-- FROM 
+--     v_product_value_per_source
+-- GROUP BY id_product;
 
---
--- PRODUCT COST PRICE BY MOYENNE PONDEREE 
---
-CREATE OR REPLACE VIEW v_product_cost_price AS 
-SELECT 
-    vtvps.id_product,
-    vtvps.total_value / vtqp.total_qte AS product_cost_price
-FROM 
-    v_total_value_per_source vtvps
-JOIN v_total_qte_produced vtqp ON vtvps.id_product = vtqp.id
-ORDER BY vtvps.id_product;
+-- --
+-- -- PRODUCT COST PRICE BY MOYENNE PONDEREE 
+-- --
+-- CREATE OR REPLACE VIEW v_product_cost_price AS 
+-- SELECT 
+--     vtvps.id_product,
+--     vtvps.total_value / vtqp.total_qte AS product_cost_price
+-- FROM 
+--     v_total_value_per_source vtvps
+-- JOIN v_total_qte_produced vtqp ON vtvps.id_product = vtqp.id
+-- ORDER BY vtvps.id_product;
 
 --
 -- SOURCE FILLE RESTE 

@@ -13,8 +13,6 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Initial Sponge ID</th>
-                        <th>Initial Sponge Purchase Price</th>
                         <th>Product ID</th>
                         <th>Product Label</th>
                         <th>Product Selling Price</th>
@@ -33,8 +31,6 @@
                                 grandTotalCostPrice += productCost; // Accumulate the cost price
                     %>
                     <tr>
-                        <td><%= costPrice.getInitialSpongeId() %></td>
-                        <td><%= currencyFormat.format(costPrice.getInitialSpongePurchasePrice()) %></td> <!-- Formatted price -->
                         <td><%= costPrice.getProductId() %></td>
                         <td><%= costPrice.getProductLabel() %></td>
                         <td><%= currencyFormat.format(costPrice.getProductSellingPrice()) %></td> <!-- Formatted selling price -->
