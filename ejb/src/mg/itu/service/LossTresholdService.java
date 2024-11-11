@@ -8,7 +8,6 @@ public class LossTresholdService {
         throws Exception
     {
         LossTreshold[] losses = new LossTreshold().getAll(LossTreshold.class, null);
-        System.out.println(losses[0].getId() + " | " + losses[0].getLabel() + " | " + losses[0].getThetha());
         return losses[0];
     }
 }

@@ -152,11 +152,12 @@ public class TransformationController extends HttpServlet {
 
     private double parseAndConvertUnit(String input) {
         double value;
-        if (input.endsWith("cm")) {
-            value = Double.parseDouble(input.replace("cm", "").trim()) / 100;
-        } else {
-            value = Double.parseDouble(input.trim()); 
-        }
+        if (input.endsWith("cm")) 
+        { value = Double.parseDouble(input.replace("cm", "").trim()) / 100; } 
+        
+        else 
+        { value = Double.parseDouble(input.trim()); }
+
         return value;
     }
 }
