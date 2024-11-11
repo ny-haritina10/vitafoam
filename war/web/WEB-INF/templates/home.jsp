@@ -60,7 +60,7 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="#" class="app-brand-link">
+            <a href="MainController" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <svg
                   width="25"
@@ -129,23 +129,22 @@
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
             <li class="menu-item active">
-              <a href="#" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+              <a href="MainController" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
-
+          
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Principale</span>
             </li>
-
+          
             <!-- Initial Sponge -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <i class="menu-icon tf-icons bx bx-droplet"></i>
                 <div data-i18n="Layouts">Initial Sponge</div>
               </a>
-
               <ul class="menu-sub">
                 <li class="menu-item">
                   <a href="InitialSpongeController?mode=create" class="menu-link">
@@ -159,14 +158,13 @@
                 </li>
               </ul>
             </li>
-
+          
             <!-- Transformation -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <i class="menu-icon tf-icons bx bx-cog"></i>
                 <div data-i18n="Layouts">Transformation</div>
               </a>
-
               <ul class="menu-sub">
                 <li class="menu-item">
                   <a href="TransformationController?mode=create" class="menu-link">
@@ -180,14 +178,13 @@
                 </li>
               </ul>
             </li>
-
-            <!-- Etat de Stock -->
+          
+            <!-- Stock Status -->
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <i class="menu-icon tf-icons bx bx-archive"></i>
                 <div data-i18n="Layouts">Stock Status</div>
               </a>
-
               <ul class="menu-sub">
                 <li class="menu-item">
                   <a href="ProductCostPriceController" class="menu-link">
@@ -211,8 +208,7 @@
                 </li>
               </ul>
             </li>
-
-          </ul>
+          </ul>          
         </aside>
         <!-- / Menu -->
 
@@ -263,14 +259,14 @@
                     document.write(new Date().getFullYear());
                   </script>
                   , made by ETU2716
-                  <a href="#" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                  <a href="MainController" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
                 </div>
                 <div>
-                  <a href="#" class="footer-link me-4" target="_blank">License</a>
+                  <a href="MainController" class="footer-link me-4" target="_blank">License</a>
                   <a href="#/" target="_blank" class="footer-link me-4">More Themes</a>
 
                   <a
-                    href="#"
+                    href="MainController"
                     target="_blank"
                     class="footer-link me-4"
                     >Documentation</a

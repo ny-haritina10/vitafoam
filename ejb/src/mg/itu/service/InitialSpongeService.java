@@ -20,6 +20,7 @@ public class InitialSpongeService {
 
         try {
             preparedStatement = connection.prepareStatement(sql);
+
             preparedStatement.setString(1, flag); 
             preparedStatement.setInt(2, idInitialSponge); 
 
@@ -32,9 +33,8 @@ public class InitialSpongeService {
             { System.out.println("No record found with ID: " + idInitialSponge); }
         } 
         
-        catch (SQLException e) {
-            e.printStackTrace();
-        } 
+        catch (SQLException e) 
+        { e.printStackTrace(); } 
         
         finally {
             if (preparedStatement != null) {

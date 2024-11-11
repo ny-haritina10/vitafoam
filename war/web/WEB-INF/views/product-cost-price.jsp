@@ -41,7 +41,7 @@
                     %>
                     <!-- Total Row -->
                     <tr>
-                        <td colspan="5" class="text-right fw-bold">Grand Total Cost Price:</td>
+                        <td colspan="2" class="text-right fw-bold">Grand Total Cost Price:</td>
                         <td><%= currencyFormat.format(grandTotalCostPrice) %></td> <!-- Formatted grand total -->
                     </tr>
                     <%

@@ -67,9 +67,12 @@ public class TransformationController extends HttpServlet {
             String transformationDate = req.getParameter("transformationDate");
 
             // remaining dimensions
-            double remainingLength = Double.parseDouble(req.getParameter("remainingLength"));
-            double remainingWidth = Double.parseDouble(req.getParameter("remainingWidth"));
-            double remainingHeight = Double.parseDouble(req.getParameter("remainingHeight"));
+            double remainingLength = parseAndConvertUnit(req.getParameter("remainingLength"));
+            double remainingWidth = parseAndConvertUnit(req.getParameter("remainingWidth"));
+            double remainingHeight = parseAndConvertUnit(req.getParameter("remainingHeight"));
+
+
+            System.out.println(remainingHeight + " === "+ remainingWidth + " ----" + remainingLength);
 
             Product[] products = new Product().getAll(Product.class, null); 
 
@@ -143,8 +146,18 @@ public class TransformationController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, resp);
         }
 
-        // forward to the view with a message
         req.setAttribute("template_content", "/WEB-INF/views/insert-transformation.jsp");
-        req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);    
+    }
+
+    // Helper method to parse and convert unit if necessary
+    private double parseAndConvertUnit(String input) {
+        double value;
+        if (input.endsWith("cm")) {
+            value = Double.parseDouble(input.replace("cm", "").trim()) / 100;
+        } else {
+            value = Double.parseDouble(input.trim()); 
+        }
+        return value;
     }
 }

@@ -15,7 +15,6 @@
                 <thead>
                     <tr>
                         <th>Main Initial Sponge ID</th> 
-                        <th>Id Source</th>
                         <th>Date Transformation</th>
                         <th>Initial Purchase Price</th>
                         <th>Initial Volume</th>
@@ -35,8 +34,7 @@
                             for (TransformationDetail detail : details) {
                     %>
                     <tr>
-                        <td><%= detail.getMainInitialSpongeId() %></td> <!-- New field -->
-                        <td><%= detail.getInitialSpongeId() %></td>
+                        <td><%= detail.getMainInitialSpongeId() %></td>
                         <td><%= detail.getDateTransformation() %></td>
                         <td><%= currencyFormat.format(detail.getInitialPurchasePrice()) %></td>
                         <td><%= (detail.getInitialHeight() * detail.getInitialLength() * detail.getInitialWidth()) %> m³</td>
@@ -51,7 +49,7 @@
                         } else {
                     %>
                     <tr>
-                        <td colspan="11" class="text-center">No Transformation Details found.</td> <!-- Adjusted colspan -->
+                        <td colspan="2" class="text-center">No Transformation Details found.</td> <!-- Adjusted colspan -->
                     </tr>
                     <% } %>
                 </tbody>

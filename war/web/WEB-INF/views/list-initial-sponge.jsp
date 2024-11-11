@@ -44,7 +44,7 @@
                         } else {
                     %>
                     <tr>
-                        <td colspan="5" class="text-center">No Initial Sponges found.</td>
+                        <td colspan="2" class="text-center">No Initial Sponges found.</td>
                     </tr>
                     <% } %>
                 </tbody>

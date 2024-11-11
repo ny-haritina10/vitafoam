@@ -96,7 +96,7 @@
             <div class="mb-3">
               <label for="remainingLength" class="form-label">Volume (m³)</label>
               <input
-                type="number"
+                type="text"
                 step="0.1"
                 class="form-control"
                 id="remainingLength"
@@ -106,9 +106,9 @@
               />
             </div>
             <div class="mb-3">
-              <!-- <label for="remainingWidth" class="form-label">Width (m)</label> -->
+              <label for="remainingWidth" class="form-label">Width (m)</label>
               <input
-                type="hidden"
+                type="text"
                 step="0.1"
                 class="form-control"
                 id="remainingWidth"
@@ -119,9 +119,9 @@
               />
             </div>
             <div class="mb-3">
-              <!-- <label for="remainingHeight" class="form-label">Height (m)</label> -->
+              <label for="remainingHeight" class="form-label">Height (m)</label>
               <input
-                type="hidden"
+                type="text"
                 step="0.1"
                 class="form-control"
                 id="remainingHeight"

@@ -34,18 +34,24 @@ public class InitialSpongeController extends HttpServlet {
                     req.setAttribute("sponge", sponge);
                     req.setAttribute("template_content", "/WEB-INF/views/edit-initial-sponge.jsp");
                     req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);
-                } else {
-                    resp.sendRedirect("InitialSpongeController");
-                }
+                } 
+                
+                else 
+                { resp.sendRedirect("InitialSpongeController"); }
             }
+
             // list of initial sponge
             else {
                 InitialSponge[] sponges = new InitialSponge().getAll(InitialSponge.class, null);
+
                 req.setAttribute("sponges", sponges);
                 req.setAttribute("template_content", "/WEB-INF/views/list-initial-sponge.jsp");
                 req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);
             }
-        } catch (Exception e) {
+        } 
+        
+        catch (Exception e) {
+            req.setAttribute("message", "Error processing form data: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -76,13 +82,9 @@ public class InitialSpongeController extends HttpServlet {
                 sponge.setDimWidth(dimWidth);
                 sponge.setDimHeight(dimHeight);
 
-                // get id fille of source
-                int idFille = InitialSpongeService.getSourceFilleId(id, null);
-
                 // retrieve fille block
+                int idFille = InitialSpongeService.getSourceFilleId(id, null);
                 InitialSponge blockFille = new InitialSponge().getById(idFille, InitialSponge.class, null);
-
-                // get new purchase price
                 double newPurchasePrice = InitialSpongeService.getNewPurchasePrice(sponge, blockFille);
 
                 // update source block
@@ -121,14 +123,17 @@ public class InitialSpongeController extends HttpServlet {
 
                 boolean savedInitialSponge = initialSponge.save(null, "InitialSponge", "seq_initial_sponge.NEXTVAL");                
 
-                if (savedInitialSponge) {
-                    req.setAttribute("message", "Initial sponge inserted successfully!");
-                } else {
-                    req.setAttribute("message", "Failed to insert initial sponge.");
-                }
+                if (savedInitialSponge) 
+                { req.setAttribute("message", "Initial sponge inserted successfully!"); } 
+                
+                else 
+                { req.setAttribute("message", "Failed to insert initial sponge."); }
+
                 req.setAttribute("template_content", "/WEB-INF/views/insert-initial-sponge.jsp");
             }
-        } catch (Exception e) {
+        } 
+        
+        catch (Exception e) {
             req.setAttribute("message", "Error processing form data: " + e.getMessage());
             e.printStackTrace();
             req.setAttribute("template_content", mode != null && mode.equals("update") ? 

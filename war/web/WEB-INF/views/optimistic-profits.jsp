@@ -47,14 +47,14 @@
                     %>
                     <!-- Total Row -->
                     <tr>
-                        <td colspan="4" class="text-right fw-bold">Grand Total Profit:</td>
+                        <td colspan="2" class="text-right fw-bold">Grand Total Profit:</td>
                         <td><%= currencyFormat.format(grandTotalProfit) %></td> <!-- Formatted grand total -->
                     </tr>
                     <%
                         } else {
                     %>
                     <tr>
-                        <td colspan="4" class="text-center">No Optimistic Profits found.</td>
+                        <td colspan="2" class="text-center">No Optimistic Profits found.</td>
                     </tr>
                     <% } %>
                 </tbody>
