@@ -251,7 +251,7 @@ GROUP BY id_product;
 --
 -- PRODUCT COST PRICE BY MOYENNE PONDEREE 
 --
-CREATE OR REPLACE VIEW v_product_cost_price AS 
+CREATE OR REPLACE VIEW v_product_cost_price_ponderee AS 
 SELECT 
     vtvps.id_product,
     vtvps.total_value / vtqp.total_qte AS product_cost_price

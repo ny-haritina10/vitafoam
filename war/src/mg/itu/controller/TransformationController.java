@@ -150,7 +150,6 @@ public class TransformationController extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/templates/home.jsp").forward(req, resp);    
     }
 
-    // Helper method to parse and convert unit if necessary
     private double parseAndConvertUnit(String input) {
         double value;
         if (input.endsWith("cm")) {

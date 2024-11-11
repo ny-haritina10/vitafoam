@@ -20,4 +20,4 @@ VALUES (seq_product.NEXTVAL, 'u3', 600.00, 5, 1, 1);
 --
 -- LOSS TRESHOLD
 --
-INSERT INTO LossTreshold (id, label, thetha) VALUES (seq_loss_treshold.NEXTVAL, 'Accepted Loss', 30);
+INSERT INTO LossTreshold (id, label, thetha) VALUES (seq_loss_treshold.NEXTVAL, 'Accepted Loss', 20);

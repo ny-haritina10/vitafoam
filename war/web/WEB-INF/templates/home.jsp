@@ -187,23 +187,8 @@
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
-                  <a href="ProductCostPriceController" class="menu-link">
-                    <div data-i18n="Without menu">Product Cost Price</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="TransformationTotalAmountController" class="menu-link">
-                    <div data-i18n="Without menu">Total amount manufactured product</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="OptimisticProfitsController" class="menu-link">
-                    <div data-i18n="Without navbar">Amount most profitable product</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="MinimalisticProfitsController" class="menu-link">
-                    <div data-i18n="Without navbar">Amount minimum volume product</div>
+                  <a href="StockStatusController" class="menu-link">
+                    <div data-i18n="Without menu">List</div>
                   </a>
                 </li>
               </ul>
