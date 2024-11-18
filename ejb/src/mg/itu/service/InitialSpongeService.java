@@ -65,7 +65,7 @@ public class InitialSpongeService {
     {
         InitialSponge remainingSponge = new InitialSponge();
 
-        // update purchase price whe inserting the remaining 
+        // update purchase price when inserting the remaining 
         // new purchase price of remaining is based on volume
         double pricePerCubicMeter = getPurchasePricePerCubicMeter(initialBlock);
         double newPurchasePrice = pricePerCubicMeter * (remainingHeight * remainingLength * remainingWidth);
@@ -204,7 +204,6 @@ public class InitialSpongeService {
 
     public static double getNewPurchasePrice(InitialSponge blockSource, InitialSponge blockFille) {
         double pricePerCubicMeter = getPurchasePricePerCubicMeter(blockSource);
-
         double newPurchasePrice = pricePerCubicMeter * (
             blockFille.getDimHeight() * 
             blockFille.getDimLength() * 

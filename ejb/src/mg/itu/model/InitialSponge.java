@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.Date;
 
 public class InitialSponge extends BaseModel<InitialSponge> {
 
@@ -16,16 +17,21 @@ public class InitialSponge extends BaseModel<InitialSponge> {
     private double dimWidth;
     private double dimHeight;
 
+    private Date dateCreation;
+    private Machine machine;
+
     // Constructors
     public InitialSponge() {}
 
-    public InitialSponge(int id, double purchasePrice, String isTransformed, double dimLength, double dimWidth, double dimHeight) {
+    public InitialSponge(int id, double purchasePrice, String isTransformed, double dimLength, double dimWidth, double dimHeight, Date dateCreation, Machine machine) {
         this.id = id;
         this.purchasePrice = purchasePrice;
         this.isTransformed = isTransformed;
         this.dimLength = dimLength;
         this.dimWidth = dimWidth;
         this.dimHeight = dimHeight;
+        this.dateCreation = dateCreation;
+        this.machine = machine;
     }
 
     // Getters and setters
@@ -89,6 +95,22 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         this.dimHeight = dimHeight;
     }
 
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public Machine getMachine() {
+        return machine;
+    }
+
+    public void setMachine(Machine machine) {
+        this.machine = machine;
+    }
+
 
     // Mapping ResultSet to InitialSponge object
     @Override
@@ -103,6 +125,8 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         sponge.setDimLength(result.getDouble("dim_length"));
         sponge.setDimWidth(result.getDouble("dim_width"));
         sponge.setDimHeight(result.getDouble("dim_height"));
+        sponge.setDateCreation(result.getDate("date_creation"));
+        sponge.setMachine(new Machine().getById(result.getInt("id_machine"), Machine.class, null));
 
         return sponge;
     }
@@ -118,6 +142,8 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         fields.put("dim_length", dimLength);
         fields.put("dim_width", dimWidth);
         fields.put("dim_height", dimHeight);
+        fields.put("date_creation", dateCreation);
+        fields.put("id_machine", machine != null ? machine.getId() : null);
 
         return fields;
     }
