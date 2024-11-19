@@ -96,3 +96,6 @@ CREATE TABLE RawMaterielPurchase (
     qte DECIMAL(10, 2) NOT NULL,
     date_purchase DATE NOT NULL
 );
+
+ALTER TABLE RawMaterielPurchase 
+ADD unit_price DECIMAL(10, 2) DEFAULT 0;

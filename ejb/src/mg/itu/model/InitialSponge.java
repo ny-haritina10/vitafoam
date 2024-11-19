@@ -1,12 +1,15 @@
 package mg.itu.model;
 
 import mg.itu.base.BaseModel;
+import mg.itu.database.Database;
 
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 
 public class InitialSponge extends BaseModel<InitialSponge> {
 
@@ -32,6 +35,34 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         this.dimHeight = dimHeight;
         this.dateCreation = dateCreation;
         this.machine = machine;
+    }
+
+    // get blocks ref
+    public InitialSponge[] getReferenceBlock(int limit) 
+        throws Exception 
+    {
+        InitialSponge[] references = new InitialSponge[limit];
+        String query = "SELECT * FROM (SELECT * FROM InitialSponge ORDER BY id ASC) WHERE ROWNUM <= ?";
+
+        try (Connection connection = Database.getConnection(); 
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            preparedStatement.setInt(1, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int index = 0;
+            while (resultSet.next() && index < limit) {
+                references[index] = mapRow(resultSet);
+                index++;
+            }
+        } 
+        
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error retrieving the reference block: ", e); 
+        }
+
+        return references;
     }
 
     // Getters and setters
@@ -110,7 +141,6 @@ public class InitialSponge extends BaseModel<InitialSponge> {
     public void setMachine(Machine machine) {
         this.machine = machine;
     }
-
 
     // Mapping ResultSet to InitialSponge object
     @Override

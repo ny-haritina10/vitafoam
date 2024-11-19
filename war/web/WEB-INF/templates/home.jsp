@@ -136,7 +136,7 @@
             </li>
           
             <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Principale</span>
+              <span class="menu-header-text">Sujet I</span>
             </li>
           
             <!-- Initial Sponge -->
@@ -189,6 +189,24 @@
                 <li class="menu-item">
                   <a href="StockStatusController" class="menu-link">
                     <div data-i18n="Without menu">List</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Sujet II</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-droplet"></i>
+                <div data-i18n="Layouts">Machine Fabrication</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="MachineController" class="menu-link">
+                    <div data-i18n="Without menu">Machine result</div>
                   </a>
                 </li>
               </ul>

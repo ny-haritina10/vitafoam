@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import mg.itu.database.Database;
 import mg.itu.model.InitialSponge;
@@ -219,5 +221,46 @@ public class InitialSpongeService {
             block.getDimLength() * 
             block.getDimWidth()
         ));
+    }
+
+    public static HashMap<String, Double> getSumVolumeAndSumPurchasePrice(int limitRef) 
+        throws Exception
+    {
+        HashMap<String, Double> result = new HashMap<String, Double>();
+        InitialSponge[] ref = new InitialSponge().getReferenceBlock(limitRef);
+
+        double sumPrixRevient = 0;
+        double sumVolume = 0;
+
+        // Calculate sum of purchase prices and volumes for reference blocks
+        for (InitialSponge initialSponge : ref) {
+            double purchasePrice = initialSponge.getPurchasePrice();
+            double volume = getVolume(initialSponge);
+
+            sumPrixRevient += purchasePrice;
+            sumVolume += volume;
+        }
+
+        result.put("prix_revient", sumPrixRevient);
+        result.put("volume", sumVolume);
+        
+        return result;
+    }
+    
+    public static double getPrixRevientPratique(InitialSponge blockMade, HashMap<String, Double> sumResult, int randMin, int randMax) 
+        throws Exception 
+    {
+        int random = UtilRamdomService.getRandomNumber(randMin, randMax);
+
+        double prixRevientPratique = 0;
+        double sumPrixRevient = sumResult.get("prix_revient");
+        double sumVolume = sumResult.get("volume");
+
+        double percentage = random / 100.0;
+        double volumeBlockMade = getVolume(blockMade);
+        double pricePerCubicMeter = sumPrixRevient / sumVolume;
+
+        prixRevientPratique += (pricePerCubicMeter + (pricePerCubicMeter * percentage)) * volumeBlockMade;
+        return prixRevientPratique;
     }
 }

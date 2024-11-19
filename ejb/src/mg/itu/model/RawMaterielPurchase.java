@@ -14,14 +14,17 @@ public class RawMaterielPurchase extends BaseModel<RawMaterielPurchase> {
     private double qte;
     private Date datePurchase;
 
+    private double unitPrice;
+
     // Constructors
     public RawMaterielPurchase() {}
 
-    public RawMaterielPurchase(int id, RawMateriel rawMateriel, double qte, Date datePurchase) {
+    public RawMaterielPurchase(int id, RawMateriel rawMateriel, double qte, Date datePurchase, double unitPrice) {
         setId(id);
         setRawMateriel(rawMateriel);
         setQte(qte);
         setDatePurchase(datePurchase);
+        setUnitPrice(unitPrice);
     }
 
     // Getters and setters
@@ -80,6 +83,7 @@ public class RawMaterielPurchase extends BaseModel<RawMaterielPurchase> {
 
         purchase.setQte(result.getDouble("qte"));
         purchase.setDatePurchase(result.getDate("date_purchase"));
+        purchase.setUnitPrice(unitPrice);
 
         return purchase;
     }
@@ -92,6 +96,16 @@ public class RawMaterielPurchase extends BaseModel<RawMaterielPurchase> {
         fields.put("id_raw_materiel", rawMateriel != null ? rawMateriel.getId() : null);
         fields.put("qte", qte);
         fields.put("date_purchase", datePurchase);
+        fields.put("unit_price", unitPrice);
+        
         return fields;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }
