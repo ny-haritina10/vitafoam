@@ -78,3 +78,38 @@ public BigDecimal calculateSpongePrice(Long spongeId) {
    - Consider materializing some intermediate results if calculations are not real-time
    - Add error handling for cases like insufficient stock
    - Consider adding a price history table to cache calculations
+
+
+/* ============================================= */
+
+create me a java class that will create a csv file fill with the data of this table but with some constraint, here is the constraint: 
+
+- purchase_price is 0
+- is_transformed is FALSE
+- dim_length will be random between 20 and 25
+- dim_width will be random between 5 and 7
+- dim_height will be random between 10 and 15
+- date_creation will be random between 2022-01-01 00:00:00 and 2024-01-01 00:00:00
+- id_machine will be random between 1 and 4
+- the program will take as a parameters the number of rows to be created 
+- the program will take as a parameters he folder location of the csv_file 
+
+CREATE TABLE InitialSponge (
+    id INT PRIMARY KEY,
+    purchase_price DECIMAL(10, 2),
+    is_transformed VARCHAR(10) DEFAULT 'FALSE',
+    dim_length DECIMAL(10, 2) NOT NULL,
+    dim_width DECIMAL(10, 2) NOT NULL,
+    dim_height DECIMAL(10, 2) NOT NULL
+);
+
+ALTER TABLE InitialSponge
+ADD (
+    date_creation DATE DEFAULT NULL,
+    id_machine INT DEFAULT NULL
+);
+
+ALTER TABLE InitialSponge
+ADD CONSTRAINT fk_Machine
+FOREIGN KEY (id_machine)
+REFERENCES Machine(id); 

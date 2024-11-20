@@ -42,7 +42,7 @@ public class InitialSponge extends BaseModel<InitialSponge> {
         throws Exception 
     {
         InitialSponge[] references = new InitialSponge[limit];
-        String query = "SELECT * FROM (SELECT * FROM InitialSponge ORDER BY id ASC) WHERE ROWNUM <= ?";
+        String query = "SELECT * FROM (SELECT * FROM InitialSponge WHERE purchase_price != 0) WHERE ROWNUM <= ?";
 
         try (Connection connection = Database.getConnection(); 
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {

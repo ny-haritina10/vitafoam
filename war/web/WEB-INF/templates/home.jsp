@@ -209,6 +209,11 @@
                     <div data-i18n="Without menu">Machine result</div>
                   </a>
                 </li>
+                <li class="menu-item">
+                  <a href="ImportController" class="menu-link">
+                    <div data-i18n="Without menu">Import CSV data</div>
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>          
