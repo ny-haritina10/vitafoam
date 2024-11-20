@@ -3,6 +3,19 @@
 /* =================================================== */
 /* =================================================== */
 
+-- TYPE
+CREATE OR REPLACE TYPE machine_price_record AS OBJECT (
+    id_machine NUMBER,
+    machine_name VARCHAR2(50),
+    total_pratique_price NUMBER,
+    total_theorique_price NUMBER,
+    ecart NUMBER
+);
+/
+
+CREATE OR REPLACE TYPE machine_price_table IS TABLE OF machine_price_record;
+/
+
 -- Function to calculate volume
 CREATE OR REPLACE FUNCTION calculate_sponge_volume(
     p_length IN NUMBER,
@@ -92,7 +105,6 @@ END;
 /
 
 -- Main function to calculate theoretical purchase price
---
 CREATE OR REPLACE FUNCTION prix_revient_theorique(
     p_sponge_id IN NUMBER
 ) RETURN NUMBER IS
@@ -222,31 +234,21 @@ END;
 /
 
 -- FINAL RESULT
-CREATE OR REPLACE TYPE machine_price_record AS OBJECT (
-    id_machine NUMBER,
-    machine_name VARCHAR2(50),
-    total_pratique_price NUMBER,
-    total_theorique_price NUMBER,
-    ecart NUMBER
-);
-/
-
-CREATE OR REPLACE TYPE machine_price_table IS TABLE OF machine_price_record;
-/
-
 CREATE OR REPLACE FUNCTION get_final_result(
-    p_limit_ref IN INT, 
-    p_rand_min IN INT, 
+    p_limit_ref IN INT,
+    p_rand_min IN INT,
     p_rand_max IN INT
 ) RETURN machine_price_table PIPELINED IS
+    v_total_pratique_price NUMBER;
+    v_total_theorique_price NUMBER;
+    v_ecart NUMBER;
 BEGIN
     FOR r IN (
         SELECT 
             i.id_machine,
             m.label AS machine_name,
             SUM(prix_revient_pratique(i.id, p_limit_ref, p_rand_min, p_rand_max)) AS total_pratique_price,
-            SUM(prix_revient_theorique(i.id)) AS total_theorique_price,
-            SUM(prix_revient_pratique(i.id, p_limit_ref, p_rand_min, p_rand_max)) - SUM(prix_revient_theorique(i.id)) AS ecart
+            SUM(prix_revient_theorique(i.id)) AS total_theorique_price
         FROM 
             InitialSponge i
         JOIN 
@@ -256,15 +258,22 @@ BEGIN
         GROUP BY 
             i.id_machine, m.label
     ) LOOP
+        -- Assign to variables
+        v_total_pratique_price := r.total_pratique_price;
+        v_total_theorique_price := r.total_theorique_price;
+
+        -- Calculate the ecart
+        v_ecart := v_total_pratique_price - v_total_theorique_price;
+
+        -- Pipe the result
         PIPE ROW(machine_price_record(
             r.id_machine,
             r.machine_name,
-            r.total_pratique_price,
-            r.total_theorique_price,
-            r.ecart
+            v_total_pratique_price,
+            v_total_theorique_price,
+            v_ecart
         ));
     END LOOP;
-    
     RETURN;
 END;
 /

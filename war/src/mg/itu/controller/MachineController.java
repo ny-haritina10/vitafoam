@@ -19,11 +19,7 @@ public class MachineController extends HttpServlet {
         throws ServletException, IOException 
     {
         try {
-            int limitRef = 3;
-            int randMin = -10;
-            int randMax = 10;
-
-            List<MachinePriceResult> result = MachinePriceResult.getAll(limitRef, randMin, randMax);
+            List<MachinePriceResult> result = MachinePriceResult.getAll();
             
             req.setAttribute("result", result);
             req.setAttribute("template_content", "/WEB-INF/views/machine-result.jsp");

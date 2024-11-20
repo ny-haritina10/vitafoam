@@ -19,6 +19,14 @@ ADD CONSTRAINT fk_Machine
 FOREIGN KEY (id_machine)
 REFERENCES Machine(id);
 
+-- new columns
+ALTER TABLE InitialSponge
+ADD (
+    volume DECIMAL(10, 2) DEFAULT NULL
+);
+
+ALTER TABLE InitialSponge DROP COLUMN volume;
+
 -- Product 
 CREATE TABLE Product (
     id INT PRIMARY KEY,

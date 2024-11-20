@@ -49,7 +49,7 @@ public class InitialSpongeCSVGenerator {
     }
     
     public static void main(String[] args) {
-        int numberOfRows = 1000;
+        int numberOfRows = 1000000;
         String folderPath = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator";
         
         generateCSV(numberOfRows, folderPath);
