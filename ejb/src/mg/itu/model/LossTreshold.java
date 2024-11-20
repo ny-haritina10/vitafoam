@@ -12,7 +12,8 @@ public class LossTreshold extends BaseModel<LossTreshold> {
     private String label;
     private double thetha;
 
-    public LossTreshold() { }
+    public LossTreshold() 
+    { }
 
     public LossTreshold(int id, String label, double thetha) {
         this.setId(id);

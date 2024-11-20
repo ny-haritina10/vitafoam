@@ -71,9 +71,6 @@ public class TransformationController extends HttpServlet {
             double remainingWidth = parseAndConvertUnit(req.getParameter("remainingWidth"));
             double remainingHeight = parseAndConvertUnit(req.getParameter("remainingHeight"));
 
-
-            System.out.println(remainingHeight + " === "+ remainingWidth + " ----" + remainingLength);
-
             Product[] products = new Product().getAll(Product.class, null); 
 
             // map all product with their quantities  
@@ -121,7 +118,6 @@ public class TransformationController extends HttpServlet {
             
             else {
                 SpongeTransformationService.insert(initialBlock, transformationDate);
-
                 SpongeTransformation lastSpongeTransformation = SpongeTransformationService.getLastSpongeTransformationInserted();
                 
                 ProductService.insertProductQuantities(productQuantities, lastSpongeTransformation);

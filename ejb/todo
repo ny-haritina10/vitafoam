@@ -138,3 +138,87 @@ ALEA 1:
 
 ALEA 2:
     Tedavina ny block mere an'ny produit rehetra
+
+/* ============================== */
+/* ============================== */
+/* ============================== */
+
+## SUJET 2
+
+** TABLE ** (DONE) 
+
++ Machine 
+    . label
+
++ Unit
+    . label
+
++ Bloc Initial 
+    . date_creation ** ALTER **   
+    . id_machine [FK] ** ALTER ** 
+
++ RawMateriel
+    . label
+    . id_unit
+
++ CubicMeterFormula
+    . id_raw_materiel
+    . qte
+
++ RawMaterielPurchase
+    . id_raw_materiel
+    . qte
+    . date_purchase
+
+** DONE **
+- Prix de revient pratique d'une Machine
+    . ALL_INITIAL_BLOCK(SUM(get_PR) / SUM(get_VOL)) +/- (10% random) * volume_block_fabriqué
+    . initial block
+        - B1 = 1.000.000$ / 250m3
+        - B2 = 1.500.000$ / 175m3
+        - B3 = 1.900.000$ / 225m3
+        -> SUM_PR = 4.400.000$
+        -> SUM_VOL = 650m3
+    . random 
+        4%
+    . volume_block_fabriqué
+        210m3
+    => (4.400.000 / 650) + ((4.400.000 / 650) * 0.04) * 210 
+    => 6769.23 + (6769.23 * 0.04) * 210
+    => 6769.23 + 270,76 * 210 
+    =>  1.478.400$
+
+
+- Prix Revient Theorique d'une Machine
+    . date fabrication
+    . PU raw_materiel correlated with date_fabrication (inferieur)
+        . SORT purchase_raw_materiel BY date_purchase ASC
+        . FIFO
+        . cursor with number of raw_materiel
+    . using cubic meter formula 
+        - 1m3 = (ALL(PU.raw_materiel * qte))
+        - exemple:
+            -> 1.5L essence (PU = 2.000)
+                -> 1.5 * 2000
+                -> 3000
+            -> 3kg papier (PU = 500)
+                -> 3 * 500
+                -> 1500
+            -> 0.5KG durcisseur (PU = 1500)
+                -> 0.5 * 1500
+                -> 750
+            ==> 3000 + 1500 + 750 = 5.250$ 
+            ==> 1m3 revient a 5.250$
+
+            -> Bloc A 
+                - 450m3
+                -> PR Theorique: 450 * 5.250 = 2.362.500$
+
+
+- Ecart Theorique et Pratique
+    ecart = PR_pratique - PR_theorique
+
+==> Manana ecart ny Machine rehetra 
+
+-> ORDER BY ecart ASC
+-> MOST EFFICIENT MACHINE => LIMIT 1
