@@ -9,6 +9,7 @@ import java.util.List;
 import mg.itu.database.Database;
 
 public class MachinePriceResult {
+
     private int idMachine;
     private String machineName;
     private double totalPratiquePrice;
@@ -78,25 +79,20 @@ public class MachinePriceResult {
         );
     }
 
-    public static List<MachinePriceResult> getAll(int limitRef, int randMin, int randMax) 
-        throws Exception 
-    {
+    // Method to fetch all records from the view
+    public static List<MachinePriceResult> getAll() throws Exception {
         List<MachinePriceResult> results = new ArrayList<>();
-        String sql = "SELECT * FROM TABLE(get_final_result(?, ?, ?))";
-        
+        String sql = "SELECT * FROM V_MACHINE_PRICE_SUMMARY ORDER BY ECART ASC";
+
         try (Connection conn = Database.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
             
-            pstmt.setInt(1, limitRef);
-            pstmt.setInt(2, randMin);
-            pstmt.setInt(3, randMax);
-            
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) 
-                { results.add(MachinePriceResult.fromResultSet(rs)); }
+            while (rs.next()) {
+                results.add(MachinePriceResult.fromResultSet(rs));
             }
         }
-        
+
         return results;
     }
 }

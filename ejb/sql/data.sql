@@ -44,6 +44,6 @@ INSERT INTO RawMateriel (id, id_unit, label) VALUES (seq_raw_materiel.NEXTVAL, 2
 --
 -- CubicMeterFormula
 --
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 2, 2); -- essence
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 5, 3); -- paper
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 6, 0.5);  -- hardener
+INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 2, 2.5); 
+INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 5, 3); 
+INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 6, 0.5);

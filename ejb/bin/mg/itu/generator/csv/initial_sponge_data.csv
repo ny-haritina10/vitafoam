@@ -1,0 +1,4 @@
+purchase_price,is_transformed,dim_length,dim_width,dim_height,date_creation,id_machine
+0,FALSE,140,1,1,2024-05-12 16:34:46,1
+0,FALSE,150,1,1,2024-06-12 21:14:18,2
+0,FALSE,110,1,1,2024-06-12 21:14:18,3

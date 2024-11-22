@@ -8,17 +8,6 @@ CREATE TABLE InitialSponge (
     dim_height DECIMAL(10, 2) NOT NULL
 );
 
-ALTER TABLE InitialSponge
-ADD (
-    date_creation DATE DEFAULT NULL,
-    id_machine INT DEFAULT NULL
-);
-
-ALTER TABLE InitialSponge
-ADD CONSTRAINT fk_Machine
-FOREIGN KEY (id_machine)
-REFERENCES Machine(id);
-
 -- Product 
 CREATE TABLE Product (
     id INT PRIMARY KEY,
@@ -96,5 +85,18 @@ CREATE TABLE RawMaterielPurchase (
     date_purchase DATE NOT NULL
 );
 
+-- ALTER InitialSponge
+ALTER TABLE InitialSponge
+ADD (
+    date_creation DATE DEFAULT NULL,
+    id_machine INT DEFAULT NULL
+);
+
+ALTER TABLE InitialSponge
+ADD CONSTRAINT fk_Machine
+FOREIGN KEY (id_machine)
+REFERENCES Machine(id);
+
+-- ALTER RawMaterielPurchase
 ALTER TABLE RawMaterielPurchase 
 ADD unit_price DECIMAL(10, 2) DEFAULT 0;
