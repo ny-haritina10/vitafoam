@@ -47,11 +47,4 @@ public class InitialSpongeCSVGenerator {
         
         return LocalDateTime.ofEpochSecond(randomEpochSecond, 0, java.time.ZoneOffset.UTC);
     }
-    
-    public static void main(String[] args) {
-        int numberOfRows = 1000000;
-        String folderPath = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator";
-        
-        generateCSV(numberOfRows, folderPath);
-    }
 }
