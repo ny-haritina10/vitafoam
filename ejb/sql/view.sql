@@ -273,3 +273,107 @@ FROM
 JOIN SpongeTransformation pt ON rt.id_sponge_transformation = pt.id
 JOIN InitialSponge isp2 ON isp2.id = rt.id_initial_sponge
 JOIN InitialSponge isp ON isp.id = pt.id_initial_sponge;
+
+/* ============================================================================================= */
+/* ============================================================================================= */
+/* ============================================================================================= */
+/* ============================================================================================= */
+/* ============================================================================================= */
+
+--
+--
+--
+CREATE OR REPLACE VIEW V_RAW_MATERIAL_FIFO_ENTRY AS
+SELECT 
+    id_raw_materiel,
+    date_purchase,
+    unit_price,
+    qte AS available_quantity,
+    ROW_NUMBER() OVER (PARTITION BY id_raw_materiel ORDER BY date_purchase, id) AS lot_number
+FROM RawMaterielPurchase
+WHERE qte > 0
+ORDER BY id_raw_materiel, date_purchase;
+
+--
+--
+--
+CREATE OR REPLACE VIEW v_raw_material_requirements AS
+SELECT 
+    s.id AS sponge_id,
+    s.date_creation,
+    v.sponge_volume,
+    cmf.id_raw_materiel,
+    cmf.qte * v.sponge_volume AS required_quantity
+FROM InitialSponge s
+JOIN V_SPONGE_VOLUME v ON s.id = v.id
+CROSS JOIN CubicMeterFormula cmf
+WHERE s.purchase_price = 0;
+
+--
+--
+--
+CREATE OR REPLACE VIEW v_pr_theorique_per_machine AS
+SELECT
+    isp.id_machine, 
+    SUM(rms.amount) AS sum_theorical_price
+FROM 
+    RawMaterialStockExit rms
+JOIN InitialSponge isp ON isp.id = rms.id_block
+GROUP BY isp.id_machine;
+
+--
+--
+--
+CREATE OR REPLACE VIEW V_REFERENCE_BLOCK_SUMMARY AS
+WITH RefBlocks AS (
+    SELECT 
+        purchase_price,
+        dim_length * dim_width * dim_height AS block_volume,
+        ROWNUM AS rn
+    FROM InitialSponge
+    WHERE purchase_price > 0
+    AND ROWNUM <= 3 -- number of refs
+)
+SELECT 
+    SUM(purchase_price) AS total_purchase_price,
+    SUM(block_volume) AS total_volume,
+    DECODE(SUM(block_volume), 0, 0, SUM(purchase_price) / SUM(block_volume)) AS price_per_cubic_meter
+FROM RefBlocks;
+
+--
+-- replace 4 by this when random (TRUNC(DBMS_RANDOM.VALUE(-10, 10))
+--
+CREATE OR REPLACE VIEW v_pr_pratique AS
+WITH RandomVariation AS (
+    SELECT 
+        s.id AS sponge_id,
+        s.id_machine,
+        v.sponge_volume,
+        r.price_per_cubic_meter * (1 + 4 / 100) AS adjusted_price_per_cubic_meter
+    FROM InitialSponge s
+    JOIN V_SPONGE_VOLUME v ON s.id = v.id
+    CROSS JOIN V_REFERENCE_BLOCK_SUMMARY r
+    WHERE s.purchase_price = 0
+)
+SELECT 
+    id_machine,
+    SUM(sponge_volume * adjusted_price_per_cubic_meter) AS sum_practical_price
+FROM RandomVariation
+GROUP BY id_machine;
+
+--
+-- 
+--
+CREATE OR REPLACE VIEW v_machine_price_comparison AS
+SELECT
+    COALESCE(pt.id_machine, pp.id_machine) AS id_machine,
+    COALESCE(pp.sum_practical_price, 0) AS sum_practical_price,
+    COALESCE(pt.sum_theorical_price, 0) AS sum_theorical_price,
+    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.sum_theorical_price, 0)) AS ecart
+FROM 
+    v_pr_theorique_per_machine pt
+FULL OUTER JOIN 
+    v_pr_pratique pp
+ON 
+    pt.id_machine = pp.id_machine
+ORDER BY ecart ASC;

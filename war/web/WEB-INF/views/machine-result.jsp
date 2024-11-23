@@ -19,7 +19,6 @@
                 <thead>
                     <tr>
                         <th>Machine ID</th>
-                        <th>Machine Name</th>
                         <th>Total Practical Price</th>
                         <th>Total Theoretical Price</th>
                         <th>Price Difference (Ecart)</th>
@@ -37,7 +36,6 @@
                     %>
                     <tr>
                         <td class="px-3"><%= machine.getIdMachine() %></td>
-                        <td class="px-3"><%= machine.getMachineName() %></td>
                         <td class="px-3"><%= currencyFormat.format(totalPratiquePrice) %></td>
                         <td class="px-3"><%= currencyFormat.format(totalTheoriquePrice) %></td>
                         <td class="px-3"><%= currencyFormat.format(ecart) %></td>
