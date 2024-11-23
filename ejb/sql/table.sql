@@ -100,3 +100,21 @@ REFERENCES Machine(id);
 -- ALTER RawMaterielPurchase
 ALTER TABLE RawMaterielPurchase 
 ADD unit_price DECIMAL(10, 2) DEFAULT 0;
+
+-- StockExit
+CREATE TABLE RawMaterialStockExit (
+    id INT PRIMARY KEY,
+    id_raw_materiel REFERENCES RawMateriel(id),
+    date_session DATE NOT NULL,
+    qte_out DECIMAL(10, 2) NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL
+);
+
+ALTER TABLE RawMaterialStockExit 
+ADD id_block INT;
+
+ALTER TABLE RawMaterialStockExit
+ADD CONSTRAINT fk_block 
+FOREIGN KEY (id_block)
+REFERENCES InitialSponge(id);

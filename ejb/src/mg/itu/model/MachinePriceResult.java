@@ -11,7 +11,6 @@ import mg.itu.database.Database;
 public class MachinePriceResult {
 
     private int idMachine;
-    private String machineName;
     private double totalPratiquePrice;
     private double totalTheoriquePrice;
     private double ecart;
@@ -19,9 +18,8 @@ public class MachinePriceResult {
     public MachinePriceResult() {}
 
     // Constructor with all fields
-    public MachinePriceResult(int idMachine, String machineName, double totalPratiquePrice, double totalTheoriquePrice, double ecart) {
+    public MachinePriceResult(int idMachine, double totalPratiquePrice, double totalTheoriquePrice, double ecart) {
         this.idMachine = idMachine;
-        this.machineName = machineName;
         this.totalPratiquePrice = totalPratiquePrice;
         this.totalTheoriquePrice = totalTheoriquePrice;
         this.ecart = ecart;
@@ -34,14 +32,6 @@ public class MachinePriceResult {
 
     public void setIdMachine(int idMachine) {
         this.idMachine = idMachine;
-    }
-
-    public String getMachineName() {
-        return machineName;
-    }
-
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
     }
 
     public double getTotalPratiquePrice() {
@@ -72,9 +62,8 @@ public class MachinePriceResult {
     public static MachinePriceResult fromResultSet(ResultSet rs) throws Exception {
         return new MachinePriceResult(
             rs.getInt("id_machine"),
-            rs.getString("machine_name"),
-            rs.getDouble("total_pratique_price"),
-            rs.getDouble("total_theorique_price"),
+            rs.getDouble("SUM_PRACTICAL_PRICE"),
+            rs.getDouble("SUM_THEORICAL_PRICE"),
             rs.getDouble("ecart")
         );
     }
@@ -82,7 +71,7 @@ public class MachinePriceResult {
     // Method to fetch all records from the view
     public static List<MachinePriceResult> getAll() throws Exception {
         List<MachinePriceResult> results = new ArrayList<>();
-        String sql = "SELECT * FROM V_MACHINE_PRICE_SUMMARY ORDER BY ECART ASC";
+        String sql = "SELECT * FROM v_machine_price_comparison";
 
         try (Connection conn = Database.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);

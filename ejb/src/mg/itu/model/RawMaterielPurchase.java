@@ -13,7 +13,6 @@ public class RawMaterielPurchase extends BaseModel<RawMaterielPurchase> {
     private RawMateriel rawMateriel;
     private double qte;
     private Date datePurchase;
-
     private double unitPrice;
 
     // Constructors
