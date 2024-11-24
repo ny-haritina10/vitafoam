@@ -356,43 +356,6 @@ FROM
 GROUP BY 
     id_machine;
 
---
--- 
---
-CREATE OR REPLACE VIEW v_machine_price_comparison AS
-SELECT
-    COALESCE(pt.id_machine, pp.id_machine) AS id_machine,
-    COALESCE(pp.sum_practical_price, 0) AS sum_practical_price,
-    COALESCE(pt.theorical_amount, 0) AS sum_theorical_price,
-    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.theorical_amount, 0)) AS ecart
-FROM 
-    MachineTheoricalPrice pt
-FULL OUTER JOIN 
-    v_pr_pratique pp
-ON 
-    pt.id_machine = pp.id_machine
-ORDER BY ecart ASC;
-
---
---
---
-SELECT
-    COALESCE(pt.id_machine, pp.id_machine) AS id_machine,
-    COALESCE(pp.sum_practical_price, 0) AS sum_practical_price,
-    COALESCE(pt.theorical_amount, 0) AS sum_theorical_price,
-    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.theorical_amount, 0)) AS ecart
-FROM
-    MachineTheoricalPrice pt
-FULL OUTER JOIN v_pr_pratique pp ON pt.id_machine = pp.id_machine
-LEFT JOIN InitialSponge isp 
-ON pt.id_machine = isp.id_machine AND EXTRACT(YEAR FROM isp.date_creation) = 2023
-GROUP BY
-    COALESCE(pt.id_machine, pp.id_machine),
-    COALESCE(pp.sum_practical_price, 0),
-    COALESCE(pt.theorical_amount, 0)
-ORDER BY
-    ecart ASC;
-
 
 
 -- 2022:4
