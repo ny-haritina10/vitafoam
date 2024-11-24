@@ -4,13 +4,14 @@ import mg.itu.base.BaseModel;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.math.BigDecimal;
 
 public class RawMaterialFifoEntry extends BaseModel<RawMaterialFifoEntry> {
 
     private int rawMaterialId;
     private String datePurchase;
-    private double unitPrice;
-    private int availableQuantity;
+    private BigDecimal unitPrice; 
+    private BigDecimal availableQuantity;
     private int lotNumber;
 
     // Constructors
@@ -33,19 +34,19 @@ public class RawMaterialFifoEntry extends BaseModel<RawMaterialFifoEntry> {
         this.datePurchase = datePurchase;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() { 
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) { 
         this.unitPrice = unitPrice;
     }
 
-    public int getAvailableQuantity() {
+    public BigDecimal getAvailableQuantity() {
         return availableQuantity;
     }
 
-    public void setAvailableQuantity(int availableQuantity) {
+    public void setAvailableQuantity(BigDecimal availableQuantity) {
         this.availableQuantity = availableQuantity;
     }
 
@@ -64,8 +65,10 @@ public class RawMaterialFifoEntry extends BaseModel<RawMaterialFifoEntry> {
 
         fifoEntry.setRawMaterialId(result.getInt("id_raw_materiel"));
         fifoEntry.setDatePurchase(result.getString("date_purchase"));
-        fifoEntry.setUnitPrice(result.getDouble("unit_price"));
-        fifoEntry.setAvailableQuantity(result.getInt("available_quantity"));
+        
+        // Use getBigDecimal for unit price
+        fifoEntry.setUnitPrice(result.getBigDecimal("unit_price")); 
+        fifoEntry.setAvailableQuantity(result.getBigDecimal("available_quantity"));
         fifoEntry.setLotNumber(result.getInt("lot_number"));
 
         return fifoEntry;
@@ -78,7 +81,9 @@ public class RawMaterialFifoEntry extends BaseModel<RawMaterialFifoEntry> {
 
         fields.put("id_raw_materiel", rawMaterialId);
         fields.put("date_purchase", datePurchase);
-        fields.put("unit_price", unitPrice);
+        
+        // Store unit price as BigDecimal
+        fields.put("unit_price", unitPrice); 
         fields.put("available_quantity", availableQuantity);
         fields.put("lot_number", lotNumber);
 

@@ -34,7 +34,9 @@ public class InitialSpongeCSVGenerator {
             }
             
             System.out.println("CSV file generated successfully at: " + csvPath);
-        } catch (IOException e) {
+        } 
+        
+        catch (IOException e) {
             System.err.println("Error generating CSV file: " + e.getMessage());
         }
     }

@@ -312,18 +312,6 @@ WHERE s.purchase_price = 0;
 --
 --
 --
-CREATE OR REPLACE VIEW v_pr_theorique_per_machine AS
-SELECT
-    isp.id_machine, 
-    SUM(rms.amount) AS sum_theorical_price
-FROM 
-    RawMaterialStockExit rms
-JOIN InitialSponge isp ON isp.id = rms.id_block
-GROUP BY isp.id_machine;
-
---
---
---
 CREATE OR REPLACE VIEW V_REFERENCE_BLOCK_SUMMARY AS
 WITH RefBlocks AS (
     SELECT 
@@ -343,23 +331,30 @@ FROM RefBlocks;
 --
 -- replace 4 by this when random (TRUNC(DBMS_RANDOM.VALUE(-10, 10))
 --
+-- WITH RandomVariation AS (
+--     SELECT 
+--         s.id AS sponge_id,
+--         s.id_machine,
+--         v.sponge_volume,
+--         r.price_per_cubic_meter * (1 + 4 / 100) AS adjusted_price_per_cubic_meter
+--     FROM InitialSponge s
+--     JOIN V_SPONGE_VOLUME v ON s.id = v.id
+--     CROSS JOIN V_REFERENCE_BLOCK_SUMMARY r
+--     WHERE s.purchase_price = 0
+-- )
+-- SELECT 
+--     id_machine,
+--     SUM(sponge_volume * adjusted_price_per_cubic_meter) AS sum_practical_price
+-- FROM RandomVariation
+-- GROUP BY id_machine;
 CREATE OR REPLACE VIEW v_pr_pratique AS
-WITH RandomVariation AS (
-    SELECT 
-        s.id AS sponge_id,
-        s.id_machine,
-        v.sponge_volume,
-        r.price_per_cubic_meter * (1 + 4 / 100) AS adjusted_price_per_cubic_meter
-    FROM InitialSponge s
-    JOIN V_SPONGE_VOLUME v ON s.id = v.id
-    CROSS JOIN V_REFERENCE_BLOCK_SUMMARY r
-    WHERE s.purchase_price = 0
-)
-SELECT 
+SELECT
     id_machine,
-    SUM(sponge_volume * adjusted_price_per_cubic_meter) AS sum_practical_price
-FROM RandomVariation
-GROUP BY id_machine;
+    SUM(purchase_price) AS sum_practical_price
+FROM 
+    InitialSponge
+GROUP BY 
+    id_machine;
 
 --
 -- 
@@ -368,12 +363,39 @@ CREATE OR REPLACE VIEW v_machine_price_comparison AS
 SELECT
     COALESCE(pt.id_machine, pp.id_machine) AS id_machine,
     COALESCE(pp.sum_practical_price, 0) AS sum_practical_price,
-    COALESCE(pt.sum_theorical_price, 0) AS sum_theorical_price,
-    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.sum_theorical_price, 0)) AS ecart
+    COALESCE(pt.theorical_amount, 0) AS sum_theorical_price,
+    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.theorical_amount, 0)) AS ecart
 FROM 
-    v_pr_theorique_per_machine pt
+    MachineTheoricalPrice pt
 FULL OUTER JOIN 
     v_pr_pratique pp
 ON 
     pt.id_machine = pp.id_machine
 ORDER BY ecart ASC;
+
+--
+--
+--
+SELECT
+    COALESCE(pt.id_machine, pp.id_machine) AS id_machine,
+    COALESCE(pp.sum_practical_price, 0) AS sum_practical_price,
+    COALESCE(pt.theorical_amount, 0) AS sum_theorical_price,
+    ABS(COALESCE(pp.sum_practical_price, 0) - COALESCE(pt.theorical_amount, 0)) AS ecart
+FROM
+    MachineTheoricalPrice pt
+FULL OUTER JOIN v_pr_pratique pp ON pt.id_machine = pp.id_machine
+LEFT JOIN InitialSponge isp 
+ON pt.id_machine = isp.id_machine AND EXTRACT(YEAR FROM isp.date_creation) = 2023
+GROUP BY
+    COALESCE(pt.id_machine, pp.id_machine),
+    COALESCE(pp.sum_practical_price, 0),
+    COALESCE(pt.theorical_amount, 0)
+ORDER BY
+    ecart ASC;
+
+
+
+-- 2022:4
+-- 2023:3
+-- 2024:1
+-- ALL:3

@@ -14,15 +14,17 @@ public class MachinePriceResult {
     private double totalPratiquePrice;
     private double totalTheoriquePrice;
     private double ecart;
+    private int count;
 
     public MachinePriceResult() {}
 
     // Constructor with all fields
-    public MachinePriceResult(int idMachine, double totalPratiquePrice, double totalTheoriquePrice, double ecart) {
+    public MachinePriceResult(int idMachine, double totalPratiquePrice, double totalTheoriquePrice, double ecart, int count) {
         this.idMachine = idMachine;
         this.totalPratiquePrice = totalPratiquePrice;
         this.totalTheoriquePrice = totalTheoriquePrice;
         this.ecart = ecart;
+        this.count = count;
     }
 
     // Getters and Setters
@@ -61,27 +63,62 @@ public class MachinePriceResult {
     // Method to map ResultSet to MachinePriceResult
     public static MachinePriceResult fromResultSet(ResultSet rs) throws Exception {
         return new MachinePriceResult(
-            rs.getInt("id_machine"),
-            rs.getDouble("SUM_PRACTICAL_PRICE"),
-            rs.getDouble("SUM_THEORICAL_PRICE"),
-            rs.getDouble("ecart")
+            rs.getInt("machine"),
+            rs.getDouble("somme_prix_revient_pratique"),
+            rs.getDouble("somme_prix_revient_theorique"),
+            rs.getDouble("ecart"),
+            rs.getInt("qte_fabrique")
         );
     }
 
-    // Method to fetch all records from the view
-    public static List<MachinePriceResult> getAll() throws Exception {
+    public static List<MachinePriceResult> getAll(int year) 
+        throws Exception 
+    {
         List<MachinePriceResult> results = new ArrayList<>();
-        String sql = "SELECT * FROM v_machine_price_comparison";
+
+        StringBuilder sqlBuilder = new StringBuilder("""
+            SELECT 
+                sm.id AS machine,
+                SUM(COALESCE(se.purchase_price_theorical, 0)) AS somme_prix_revient_theorique, 
+                SUM(COALESCE(se.purchase_price, 0)) AS somme_prix_revient_pratique,
+                ABS(SUM(COALESCE(se.purchase_price, 0)) - SUM(COALESCE(se.purchase_price_theorical, 0))) AS ecart,
+                COUNT(se.id) AS qte_fabrique
+            FROM 
+                Machine sm 
+            LEFT JOIN 
+                InitialSponge se ON sm.id = se.id_machine
+        """);
+
+        if (year != 0) {
+            sqlBuilder.append(" AND EXTRACT(YEAR FROM se.date_creation) = ? ");
+        }
+
+        sqlBuilder.append(" GROUP BY sm.id, sm.label ORDER BY ecart ASC");
+
+        String sql = sqlBuilder.toString();
 
         try (Connection conn = Database.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-                ResultSet rs = pstmt.executeQuery()) {
-            
-            while (rs.next()) {
-                results.add(MachinePriceResult.fromResultSet(rs));
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            if (year != 0) {
+                pstmt.setInt(1, year);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) { 
+                    results.add(MachinePriceResult.fromResultSet(rs)); 
+                }
             }
         }
 
         return results;
     }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }    
 }

@@ -4,56 +4,60 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.math.BigDecimal;
 
 import mg.itu.database.Database;
 
 public class RawMaterialRequirementService {
 
     /**
-     * Retrieves raw material requirements for a given sponge volume.
+     * Preloads raw material multipliers for all cubic meter formulas from the database.
      *
-     * @param connection the database connection
-     * @param spongeVolume the volume of the sponge
-     * @return a HashMap with raw material ID as key and required quantity as value
+     * @return a HashMap with raw material ID as key and quantity per cubic meter as value
      * @throws Exception if a database error occurs
      */
-    public static HashMap<Integer, Double> getRawMaterialRequirementsByVolume(Connection connection, double spongeVolume) 
-        throws Exception 
-    {
+    public static HashMap<Integer, BigDecimal> preloadRawMaterialMultipliers() throws Exception {
+        HashMap<Integer, BigDecimal> rawMaterialMultipliers = new HashMap<>();
 
-        if (connection == null)
-        { connection = Database.getConnection(); }
+        String query = "SELECT id_raw_materiel, qte FROM CubicMeterFormula";
 
-        HashMap<Integer, Double> rawMaterialMap = new HashMap<>();
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
 
-        String query = """
-                SELECT 
-                    cmf.id_raw_materiel, 
-                    cmf.qte * ? AS required_quantity
-                FROM CubicMeterFormula cmf
-                """;
+            while (resultSet.next()) {
+                int rawMaterialId = resultSet.getInt("id_raw_materiel");
+                BigDecimal quantityPerCubicMeter = resultSet.getBigDecimal("qte");
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setDouble(1, spongeVolume);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int rawMaterialId = resultSet.getInt("id_raw_materiel");
-                    double requiredQuantity = resultSet.getDouble("required_quantity");
-
-                    rawMaterialMap.put(rawMaterialId, requiredQuantity);
-                }
+                rawMaterialMultipliers.put(rawMaterialId, quantityPerCubicMeter);
             }
-        } 
-        
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception("Error fetching raw material requirements by volume", e);
+            throw new Exception("Error preloading raw material multipliers", e);
         }
 
-        finally {
-            if (connection != null) 
-            { connection.close(); }
+        return rawMaterialMultipliers;
+    }
+
+    /**
+     * Calculates raw material requirements for a given sponge volume using preloaded multipliers.
+     *
+     * @param multipliers a preloaded map of raw material multipliers (qte per cubic meter)
+     * @param spongeVolume the volume of the sponge
+     * @return a HashMap with raw material ID as key and required quantity as value
+     */
+    public static HashMap<Integer, BigDecimal> getRawMaterialRequirements(
+            HashMap<Integer, BigDecimal> multipliers, BigDecimal spongeVolume) {
+        HashMap<Integer, BigDecimal> rawMaterialMap = new HashMap<>();
+
+        for (var entry : multipliers.entrySet()) {
+            int rawMaterialId = entry.getKey();
+            BigDecimal quantityPerCubicMeter = entry.getValue();
+
+            // Calculate required quantity for the given volume
+            BigDecimal requiredQuantity = quantityPerCubicMeter.multiply(spongeVolume);
+
+            rawMaterialMap.put(rawMaterialId, requiredQuantity);
         }
 
         return rawMaterialMap;

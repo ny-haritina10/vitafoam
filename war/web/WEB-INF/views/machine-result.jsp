@@ -6,10 +6,25 @@
 
 <%
     NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US); 
+    String yearParam = request.getParameter("year"); // Retrieve the year parameter
+    int selectedYear = (yearParam != null) ? Integer.parseInt(yearParam) : 0; // Default to 0 (All)
 %>
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Machine Price Results</h4>
+
+    <!-- Year Filter -->
+    <div class="mb-3">
+        <label for="yearFilter" class="form-label">Filter by Year:</label>
+        <form method="get" action="<%= request.getContextPath() %>/controller/MachineController">
+            <select name="year" class="form-select" onchange="this.form.submit()">
+                <option value="0" <%= (selectedYear == 0) ? "selected" : "" %>>All</option>
+                <option value="2024" <%= (selectedYear == 2024) ? "selected" : "" %>>2024</option>
+                <option value="2023" <%= (selectedYear == 2023) ? "selected" : "" %>>2023</option>
+                <option value="2022" <%= (selectedYear == 2022) ? "selected" : "" %>>2022</option>
+            </select>
+        </form>
+    </div>
 
     <!-- Machine Price Results Table -->
     <div class="card mb-4">
@@ -21,12 +36,12 @@
                         <th>Machine ID</th>
                         <th>Total Practical Price</th>
                         <th>Total Theoretical Price</th>
+                        <th>Manufactured Sponge</th>
                         <th>Price Difference (Ecart)</th>
                     </tr>
                 </thead>
-                <tbody class="table-border-bottom-0">
+                <tbody class="table-border-bottom-0" id="resultTable">
                     <%
-                        // Retrieve the list of machine results from the request attribute
                         List<MachinePriceResult> results = (List<MachinePriceResult>) request.getAttribute("result");
                         if (results != null && !results.isEmpty()) {
                             for (MachinePriceResult machine : results) {
@@ -38,6 +53,7 @@
                         <td class="px-3"><%= machine.getIdMachine() %></td>
                         <td class="px-3"><%= currencyFormat.format(totalPratiquePrice) %></td>
                         <td class="px-3"><%= currencyFormat.format(totalTheoriquePrice) %></td>
+                        <td class="px-3"><%= machine.getCount() %></td>
                         <td class="px-3"><%= currencyFormat.format(ecart) %></td>
                     </tr>
                     <%
@@ -45,7 +61,7 @@
                         } else {
                     %>
                     <tr>
-                        <td colspan="5" class="text-center">No Machine Price Results found.</td>
+                        <td colspan="4" class="text-center">No Machine Price Results found.</td>
                     </tr>
                     <% } %>
                 </tbody>

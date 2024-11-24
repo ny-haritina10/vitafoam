@@ -85,6 +85,9 @@ CREATE TABLE RawMaterielPurchase (
     date_purchase DATE NOT NULL
 );
 
+ALTER TABLE RawMaterielPurchase 
+MODIFY (qte DECIMAL(15, 2));
+
 -- ALTER InitialSponge
 ALTER TABLE InitialSponge
 ADD (
@@ -101,20 +104,22 @@ REFERENCES Machine(id);
 ALTER TABLE RawMaterielPurchase 
 ADD unit_price DECIMAL(10, 2) DEFAULT 0;
 
--- StockExit
-CREATE TABLE RawMaterialStockExit (
+-- machine theorical price
+CREATE TABLE MachineTheoricalPrice (
     id INT PRIMARY KEY,
-    id_raw_materiel REFERENCES RawMateriel(id),
-    date_session DATE NOT NULL,
-    qte_out DECIMAL(10, 2) NOT NULL,
-    unit_price DECIMAL(10, 2) NOT NULL,
-    amount DECIMAL(10, 2) NOT NULL
+    id_machine INT NOT NULL REFERENCES Machine(id),
+    theorical_amount DECIMAL(17, 2) NOT NULL  
 );
 
-ALTER TABLE RawMaterialStockExit 
-ADD id_block INT;
+-- sponge count
+ALTER TABLE MachineTheoricalPrice
+ADD (
+    manufactured_sponge_count DECIMAL(17, 2) DEFAULT 0
+);
 
-ALTER TABLE RawMaterialStockExit
-ADD CONSTRAINT fk_block 
-FOREIGN KEY (id_block)
-REFERENCES InitialSponge(id);
+
+-- add purchase_price_theorical 
+ALTER TABLE InitialSponge
+ADD (
+    purchase_price_theorical DECIMAL(17, 2) DEFAULT 0
+);
