@@ -40,10 +40,3 @@ INSERT INTO Unit (id, label) VALUES (seq_unit.NEXTVAL, 'm');
 INSERT INTO RawMateriel (id, id_unit, label) VALUES (seq_raw_materiel.NEXTVAL, 3, 'Essence');
 INSERT INTO RawMateriel (id, id_unit, label) VALUES (seq_raw_materiel.NEXTVAL, 2, 'Paper');
 INSERT INTO RawMateriel (id, id_unit, label) VALUES (seq_raw_materiel.NEXTVAL, 2, 'Hardener');
-
---
--- CubicMeterFormula
---
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 2, 2.5); 
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 5, 3); 
-INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEXTVAL, 6, 0.5);

@@ -35,3 +35,6 @@ sponge-alea/
 
 # conception file
 ejb/conception/
+
+# csv file
+*.csv

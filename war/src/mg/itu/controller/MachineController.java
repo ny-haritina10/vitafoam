@@ -16,11 +16,14 @@ public class MachineController extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException, IOException 
-    {
+        throws ServletException, IOException {
         try {
-            List<MachinePriceResult> result = MachinePriceResult.getAll();
-            
+            String yearParam = req.getParameter("year");
+            int year = (yearParam != null) ? Integer.parseInt(yearParam) : 0;
+
+            List<MachinePriceResult> result;
+            result = MachinePriceResult.getAll(year);
+
             req.setAttribute("result", result);
             req.setAttribute("template_content", "/WEB-INF/views/machine-result.jsp");
 

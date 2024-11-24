@@ -24,18 +24,17 @@ public class ImportController extends HttpServlet {
         String mode = (String) req.getParameter("mode");
         String message = "";
 
-        System.out.println("MODE: " + mode);
-
         try {
             if (mode != null && mode.equals("import_csv")) {
-                String path = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator\\csv\\initial_sponge_data.csv";
+                String path = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator\\csv\\Data_1m.csv";
 
                 ImportCSVData.importCSVToDatabase(path);
-                message += "Data imported and processed successfully ! Check out StockExit table";     
+                message += "Data imported and processed successfully ! Check out Machine Result table";     
             }
 
             else if (mode != null && mode.equals("generate_csv")) {
-                int numberOfRows = 100;
+                // rows number
+                int numberOfRows = 100000;
                 String folderPath = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator\\csv";
                 
                 InitialSpongeCSVGenerator.generateCSV(numberOfRows, folderPath);
