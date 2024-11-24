@@ -40,7 +40,7 @@ public class ImportCSVData {
              BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
     
             conn.setAutoCommit(false);
-            br.readLine(); // Skip header
+            br.readLine(); 
     
             String line;
             int count = 0;
@@ -154,17 +154,6 @@ public class ImportCSVData {
             pstmtSponge.executeBatch();
             conn.commit();
     
-            // Print final sponge counts and costs
-            System.out.println("Final Machine Statistics:");
-            for (Map.Entry<Integer, BigDecimal> entry : machineStockUsageMap.entrySet()) {
-                int machineId = entry.getKey();
-                BigDecimal totalCost = entry.getValue();
-                int spongeCount = machineSpongeCountMap.getOrDefault(machineId, 0);
-    
-                System.out.printf("Machine ID: %d, Total Cost: %.2f, Sponge Count: %d%n", machineId, totalCost, spongeCount);
-            }
-    
-            // Insert machine theoretical price and sponge count
             MachineService.insertMachineTheoreticalPriceAndSpongeCount(machineStockUsageMap, machineSpongeCountMap);
     
         } catch (Exception e) {
