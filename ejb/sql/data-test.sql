@@ -8,14 +8,14 @@ INSERT INTO CubicMeterFormula (id, id_raw_materiel, qte) VALUES (seq_formula.NEX
 --
 -- REF INTIIAL BLOC
 --
-INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine)
-VALUES (seq_initial_sponge.NEXTVAL, 3000000, 'FALSE', 102, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 1);
+INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine, purchase_price_theorical)
+VALUES (seq_initial_sponge.NEXTVAL, 3000000, 'FALSE', 500, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 1, 0);
 
-INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine)
-VALUES (seq_initial_sponge.NEXTVAL, 3200000, 'FALSE', 125, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 2);
+INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine, purchase_price_theorical)
+VALUES (seq_initial_sponge.NEXTVAL, 3200000, 'FALSE', 600, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 2, 0);
 
-INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine)
-VALUES (seq_initial_sponge.NEXTVAL, 4000000, 'FALSE', 147, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 3);
+INSERT INTO InitialSponge (id, purchase_price, is_transformed, dim_length, dim_width, dim_height, date_creation, id_machine, purchase_price_theorical)
+VALUES (seq_initial_sponge.NEXTVAL, 4000000, 'FALSE', 700, 1, 1, TO_DATE('2024-05-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 3, 0);
 
 
 

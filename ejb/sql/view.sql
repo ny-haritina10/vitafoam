@@ -280,8 +280,15 @@ JOIN InitialSponge isp ON isp.id = pt.id_initial_sponge;
 /* ============================================================================================= */
 /* ============================================================================================= */
 
+/*
+    2022:4
+    2023:3
+    2024:1
+    ALL:3
+*/
+
 --
---
+-- V_RAW_MATERIAL_FIFO_ENTRY
 --
 CREATE OR REPLACE VIEW V_RAW_MATERIAL_FIFO_ENTRY AS
 SELECT 
@@ -295,22 +302,7 @@ WHERE qte > 0
 ORDER BY id_raw_materiel, date_purchase;
 
 --
---
---
-CREATE OR REPLACE VIEW v_raw_material_requirements AS
-SELECT 
-    s.id AS sponge_id,
-    s.date_creation,
-    v.sponge_volume,
-    cmf.id_raw_materiel,
-    cmf.qte * v.sponge_volume AS required_quantity
-FROM InitialSponge s
-JOIN V_SPONGE_VOLUME v ON s.id = v.id
-CROSS JOIN CubicMeterFormula cmf
-WHERE s.purchase_price = 0;
-
---
---
+-- V_REFERENCE_BLOCK_SUMMARY
 --
 CREATE OR REPLACE VIEW V_REFERENCE_BLOCK_SUMMARY AS
 WITH RefBlocks AS (
@@ -319,7 +311,7 @@ WITH RefBlocks AS (
         dim_length * dim_width * dim_height AS block_volume,
         ROWNUM AS rn
     FROM InitialSponge
-    WHERE purchase_price > 0
+    WHERE purchase_price_theorical = 0      -- get ref blocks
     AND ROWNUM <= 3 -- number of refs
 )
 SELECT 
@@ -327,38 +319,3 @@ SELECT
     SUM(block_volume) AS total_volume,
     DECODE(SUM(block_volume), 0, 0, SUM(purchase_price) / SUM(block_volume)) AS price_per_cubic_meter
 FROM RefBlocks;
-
---
--- replace 4 by this when random (TRUNC(DBMS_RANDOM.VALUE(-10, 10))
---
--- WITH RandomVariation AS (
---     SELECT 
---         s.id AS sponge_id,
---         s.id_machine,
---         v.sponge_volume,
---         r.price_per_cubic_meter * (1 + 4 / 100) AS adjusted_price_per_cubic_meter
---     FROM InitialSponge s
---     JOIN V_SPONGE_VOLUME v ON s.id = v.id
---     CROSS JOIN V_REFERENCE_BLOCK_SUMMARY r
---     WHERE s.purchase_price = 0
--- )
--- SELECT 
---     id_machine,
---     SUM(sponge_volume * adjusted_price_per_cubic_meter) AS sum_practical_price
--- FROM RandomVariation
--- GROUP BY id_machine;
-CREATE OR REPLACE VIEW v_pr_pratique AS
-SELECT
-    id_machine,
-    SUM(purchase_price) AS sum_practical_price
-FROM 
-    InitialSponge
-GROUP BY 
-    id_machine;
-
-
-
--- 2022:4
--- 2023:3
--- 2024:1
--- ALL:3

@@ -21,6 +21,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+// refactorisation: https://claude.ai/chat/c64d9edf-8598-4e3a-92aa-52df48178ae7
+ 
 public class ImportCSVData {
 
     private static final int BATCH_SIZE = 1000;
@@ -29,6 +31,7 @@ public class ImportCSVData {
     public static void importCSVToDatabase(String csvFilePath) 
         throws Exception 
     {
+        // preload entries from the start
         entries = new RawMaterialFifoEntry().getAll(RawMaterialFifoEntry.class, null, "V_RAW_MATERIAL_FIFO_ENTRY");
 
         String insertSpongeSQL = "INSERT INTO InitialSponge " +
@@ -40,23 +43,23 @@ public class ImportCSVData {
              BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
     
             conn.setAutoCommit(false);
-            br.readLine(); // Skip header
+            br.readLine(); 
     
             String line;
             int count = 0;
     
-            // Tracking stock usage and sponge counts
+            // tracking stock usage and sponge counts
             Map<Integer, Queue<StockLot>> stockLotsMap = new HashMap<>();
             Map<Integer, BigDecimal> machineStockUsageMap = new HashMap<>();
             Map<Integer, Integer> machineSpongeCountMap = new HashMap<>();
     
-            // Preload raw material multipliers at the start
+            // preload raw material multipliers at the start
             HashMap<Integer, BigDecimal> multipliers = RawMaterialRequirementService.preloadRawMaterialMultipliers();
     
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
     
-                // Parse sponge data
+                // parse csv data
                 String dateStr = values[0];
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 Date dateCreation = Date.valueOf(LocalDate.parse(dateStr, formatter));
@@ -64,13 +67,13 @@ public class ImportCSVData {
                 BigDecimal length = new BigDecimal(values[1]);
                 BigDecimal width = new BigDecimal(values[2]);
                 BigDecimal height = new BigDecimal(values[3]);
+
                 BigDecimal purchasePrice = new BigDecimal(values[4]);
                 int machineId = Integer.parseInt(values[5].replace("M", ""));
     
-                // Calculate volume
                 BigDecimal volume = length.multiply(width).multiply(height);
     
-                // Get raw material requirements using preloaded multipliers
+                // get raw material requirements using preloaded multipliers
                 HashMap<Integer, BigDecimal> requirements = RawMaterialRequirementService.getRawMaterialRequirements(multipliers, volume);
     
                 BigDecimal theoreticalPrice = BigDecimal.ZERO;
@@ -80,20 +83,19 @@ public class ImportCSVData {
                     int rawMaterialId = requirement.getKey();
                     BigDecimal requiredQty = requirement.getValue();
     
-                    // Initialize stock lots for this raw material if not already done
+                    // initialize stock lots for this raw material if not already done
                     if (!stockLotsMap.containsKey(rawMaterialId)) {
                         Queue<StockLot> lots = new LinkedList<>();
     
                         for (RawMaterialFifoEntry entry : entries) {
-                            if (entry.getRawMaterialId() == rawMaterialId && entry.getAvailableQuantity().compareTo(BigDecimal.ZERO) > 0) {
-                                lots.add(new StockLot(entry));
-                            }
+                            if (entry.getRawMaterialId() == rawMaterialId && entry.getAvailableQuantity().compareTo(BigDecimal.ZERO) > 0) 
+                            { lots.add(new StockLot(entry)); }
                         }
     
                         stockLotsMap.put(rawMaterialId, lots);
                     }
     
-                    // Fulfill requirement from available lots
+                    // fulfill requirement from available lots
                     Queue<StockLot> lots = stockLotsMap.get(rawMaterialId);
                     BigDecimal remainingQtyNeeded = requiredQty;
     
@@ -109,10 +111,10 @@ public class ImportCSVData {
     
                             currentLot.remainingQty = currentLot.remainingQty.subtract(qtyFromLot);
                             remainingQtyNeeded = remainingQtyNeeded.subtract(qtyFromLot);
-    
-                            if (currentLot.remainingQty.compareTo(BigDecimal.ZERO) <= 0) {
-                                lots.poll();
-                            }
+                            
+                            // remove empty lots
+                            if (currentLot.remainingQty.compareTo(BigDecimal.ZERO) <= 0) 
+                            { lots.poll(); }
                         }
                     }
     
@@ -123,7 +125,7 @@ public class ImportCSVData {
                 }
     
                 if (hasEnoughStock) {
-                    // Insert sponge data including the theoretical price
+                    // insert sponge data
                     pstmtSponge.setBigDecimal(1, purchasePrice);
                     pstmtSponge.setString(2, "FALSE");
                     pstmtSponge.setBigDecimal(3, length);
@@ -134,10 +136,11 @@ public class ImportCSVData {
                     pstmtSponge.setBigDecimal(8, theoreticalPrice); 
                     pstmtSponge.addBatch();
     
-                    // Increment sponge count for the machine
+                    // increment sponge count for the machine
                     machineSpongeCountMap.merge(machineId, 1, Integer::sum);
-    
-                    count++;
+
+                    // bacth counter
+                    count++;        
     
                     if (count % BATCH_SIZE == 0) {
                         pstmtSponge.executeBatch();
@@ -146,30 +149,20 @@ public class ImportCSVData {
                     }
                 } 
                 
-                else {
-                    throw new RuntimeException("Insufficient stock for raw materials to create sponge at row " + (count + 2));
-                }
+                else 
+                { throw new RuntimeException("Insufficient stock for raw materials to create sponge at row " + (count + 2)); }
             }
     
             pstmtSponge.executeBatch();
             conn.commit();
     
-            // Print final sponge counts and costs
-            System.out.println("Final Machine Statistics:");
-            for (Map.Entry<Integer, BigDecimal> entry : machineStockUsageMap.entrySet()) {
-                int machineId = entry.getKey();
-                BigDecimal totalCost = entry.getValue();
-                int spongeCount = machineSpongeCountMap.getOrDefault(machineId, 0);
-    
-                System.out.printf("Machine ID: %d, Total Cost: %.2f, Sponge Count: %d%n", machineId, totalCost, spongeCount);
-            }
-    
-            // Insert machine theoretical price and sponge count
             MachineService.insertMachineTheoreticalPriceAndSpongeCount(machineStockUsageMap, machineSpongeCountMap);
     
-        } catch (Exception e) {
+        } 
+        
+        catch (Exception e) {
             e.printStackTrace();
-            throw new Exception("Error occurred during CSV import", e);
+            throw new Exception("Error occurred during CSV import: " + e.getMessage());
         }
     }
     

@@ -117,7 +117,6 @@ ADD (
     manufactured_sponge_count DECIMAL(17, 2) DEFAULT 0
 );
 
-
 -- add purchase_price_theorical 
 ALTER TABLE InitialSponge
 ADD (

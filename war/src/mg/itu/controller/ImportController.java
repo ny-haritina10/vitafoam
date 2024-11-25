@@ -34,7 +34,7 @@ public class ImportController extends HttpServlet {
 
             else if (mode != null && mode.equals("generate_csv")) {
                 // rows number
-                int numberOfRows = 100000;
+                int numberOfRows = 1000000;
                 String folderPath = "D:\\Studies\\ITU\\S5\\INF301_Architechture-Logiciel\\projet\\vitafoam\\ejb\\src\\mg\\itu\\generator\\csv";
                 
                 InitialSpongeCSVGenerator.generateCSV(numberOfRows, folderPath);

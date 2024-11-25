@@ -72,7 +72,7 @@
 
   <li class="menu-item">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="menu-icon tf-icons bx bx-droplet"></i>
+      <i class="menu-icon tf-icons bx bx-data"></i>
       <div data-i18n="Layouts">Machine Fabrication</div>
     </a>
 
@@ -86,24 +86,24 @@
   </li>
 
 
-  <li class="menu-item">
+  <li class="menu-item"> 
     <a href="javascript:void(0);" class="menu-link menu-toggle">
-      <i class="menu-icon tf-icons bx bx-droplet"></i>
+      <i class="menu-icon tf-icons bx bx-file"></i> <!-- Updated icon -->
       <div data-i18n="Layouts">CSV Data</div>
     </a>
-
+  
     <ul class="menu-sub">
       <li class="menu-item">
         <a href="ImportController?mode=import_csv" class="menu-link">
           <div data-i18n="Without menu">Import CSV data</div>
         </a>
       </li>
-
+  
       <li class="menu-item">
         <a href="ImportController?mode=generate_csv" class="menu-link">
           <div data-i18n="Without menu">Generate CSV data</div>
         </a>
       </li>
     </ul>
-  </li>
+  </li>  
 </ul>  
