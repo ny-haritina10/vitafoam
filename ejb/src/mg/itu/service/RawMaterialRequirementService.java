@@ -46,8 +46,8 @@ public class RawMaterialRequirementService {
      * @param spongeVolume the volume of the sponge
      * @return a HashMap with raw material ID as key and required quantity as value
      */
-    public static HashMap<Integer, BigDecimal> getRawMaterialRequirements(
-            HashMap<Integer, BigDecimal> multipliers, BigDecimal spongeVolume) {
+    public static HashMap<Integer, BigDecimal> getRawMaterialRequirements(HashMap<Integer, BigDecimal> multipliers, BigDecimal spongeVolume) 
+        {
         HashMap<Integer, BigDecimal> rawMaterialMap = new HashMap<>();
 
         for (var entry : multipliers.entrySet()) {
